@@ -1,0 +1,2029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Engineering Division - Inventory Summary | Henrico County</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2c5282;
+            --accent-color: #3182ce;
+            --success-color: #38a169;
+            --warning-color: #d69e2e;
+            --danger-color: #c53030;
+            --light-bg: #f7fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --gradient-start: #1a365d;
+            --gradient-end: #2c5282;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e9f0 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 50%, #4a5568 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-title {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .header-meta {
+            text-align: right;
+        }
+
+        .last-updated {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.6rem 1.2rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%);
+            color: white;
+        }
+
+        .btn-clear {
+            background: linear-gradient(135deg, #e53e3e 0%, #c53030 100%);
+            color: white;
+        }
+
+        .btn-reset {
+            background: linear-gradient(135deg, #d69e2e 0%, #b7791f 100%);
+            color: white;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid var(--accent-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .summary-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, transparent 50%, rgba(49, 130, 206, 0.05) 50%);
+            border-radius: 0 16px 0 0;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .summary-card.signal { border-left-color: #3182ce; }
+        .summary-card.signal::before { background: linear-gradient(135deg, transparent 50%, rgba(49, 130, 206, 0.08) 50%); }
+        
+        .summary-card.detection { border-left-color: #38a169; }
+        .summary-card.detection::before { background: linear-gradient(135deg, transparent 50%, rgba(56, 161, 105, 0.08) 50%); }
+        
+        .summary-card.pedestrian { border-left-color: #d69e2e; }
+        .summary-card.pedestrian::before { background: linear-gradient(135deg, transparent 50%, rgba(214, 158, 46, 0.08) 50%); }
+        
+        .summary-card.lighting { border-left-color: #805ad5; }
+        .summary-card.lighting::before { background: linear-gradient(135deg, transparent 50%, rgba(128, 90, 213, 0.08) 50%); }
+
+        .summary-card-label {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .summary-card-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            line-height: 1;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 900px) {
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card:hover {
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header-icon {
+            font-size: 1.3rem;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.65rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: #fafbfc;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+        }
+
+        .form-input::-webkit-inner-spin-button {
+            opacity: 1;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .section-divider {
+            border: none;
+            border-top: 2px solid var(--border-color);
+            margin: 1.25rem 0;
+        }
+
+        .sub-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .sub-section-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .location-list {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            padding-left: 1.25rem;
+            margin-top: 0.5rem;
+        }
+
+        .location-list li {
+            margin-bottom: 0.4rem;
+            padding: 0.25rem 0;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge.warning {
+            background: linear-gradient(135deg, #f6e05e 0%, #d69e2e 100%);
+            color: #744210;
+        }
+
+        .badge.success {
+            background: linear-gradient(135deg, #68d391 0%, #38a169 100%);
+            color: white;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            background: linear-gradient(135deg, #38a169 0%, #2f855a 100%);
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(56, 161, 105, 0.4);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.4s ease;
+            z-index: 1000;
+            font-weight: 600;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Staff Table Styles */
+        .staff-table-container {
+            overflow-x: auto;
+            margin-top: 0.5rem;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .staff-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        .staff-table th {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            white-space: nowrap;
+        }
+
+        .staff-table td {
+            padding: 0.5rem;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .staff-table .position-label {
+            text-align: left;
+            font-weight: 600;
+            background: var(--light-bg);
+            padding-left: 1rem;
+        }
+
+        .staff-table .table-input {
+            width: 55px;
+            padding: 0.4rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            text-align: center;
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+        }
+
+        .staff-table .table-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+        }
+
+        .staff-table .row-total,
+        .staff-table .col-total {
+            font-weight: 700;
+            color: var(--secondary-color);
+            background: #e8f4f8;
+        }
+
+        .staff-table .grand-total {
+            font-weight: 800;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #2b6cb0 100%);
+        }
+
+        .staff-table .total-row td {
+            border-top: 3px solid var(--primary-color);
+            padding-top: 0.75rem;
+        }
+
+        .staff-table tbody tr:hover {
+            background: #f0f7ff;
+        }
+
+        /* Traffic Calming Layout */
+        .traffic-calming-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        .tc-form-section {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .tc-district-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #edf2f7 100%);
+            border-radius: 12px;
+            padding: 1.25rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .district-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem;
+            margin-top: 0.75rem;
+        }
+
+        .district-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.3rem;
+        }
+
+        .district-item .form-input {
+            padding: 0.5rem 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 500px) {
+            .traffic-calming-layout {
+                grid-template-columns: 1fr;
+            }
+            .district-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .notes-textarea {
+            width: 100%;
+            min-height: 120px;
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+        }
+
+        .notes-textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 4px rgba(49, 130, 206, 0.1);
+        }
+
+        /* ========================================
+           PROFESSIONAL PDF PRINT STYLES
+           ======================================== */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 0.5in 0.6in;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+                color-adjust: exact !important;
+            }
+
+            body {
+                background: white !important;
+                font-size: 10pt;
+                line-height: 1.4;
+            }
+
+            .header {
+                background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%) !important;
+                padding: 1rem 1.5rem;
+                margin: -0.5in -0.6in 0 -0.6in;
+                width: calc(100% + 1.2in);
+                box-shadow: none;
+            }
+
+            .header::before {
+                display: none;
+            }
+
+            .header h1 {
+                font-size: 18pt;
+                margin-bottom: 0.25rem;
+            }
+
+            .btn-group, .toast {
+                display: none !important;
+            }
+
+            .container {
+                padding: 1rem 0;
+                max-width: none;
+            }
+
+            .summary-cards {
+                display: grid !important;
+                grid-template-columns: repeat(4, 1fr) !important;
+                gap: 0.5rem;
+                margin-bottom: 1rem;
+                page-break-inside: avoid;
+            }
+
+            .summary-card {
+                padding: 0.75rem;
+                border-radius: 8px;
+                box-shadow: none;
+                border: 1px solid #e2e8f0;
+                page-break-inside: avoid;
+            }
+
+            .summary-card::before {
+                display: none;
+            }
+
+            .summary-card-label {
+                font-size: 7pt;
+                margin-bottom: 0.25rem;
+            }
+
+            .summary-card-value {
+                font-size: 20pt;
+            }
+
+            .dashboard-grid {
+                display: grid !important;
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 1rem;
+            }
+
+            .card {
+                border-radius: 8px;
+                box-shadow: none;
+                border: 1px solid #d0d5dd;
+                page-break-inside: avoid;
+                break-inside: avoid;
+            }
+
+            .card-header {
+                background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%) !important;
+                padding: 0.6rem 1rem;
+                font-size: 10pt;
+            }
+
+            .card-body {
+                padding: 1rem;
+            }
+
+            .form-input, .table-input {
+                border: none !important;
+                border-bottom: 1px solid #ccc !important;
+                background: transparent !important;
+                padding: 0.3rem 0.5rem;
+                font-size: 9pt;
+                box-shadow: none !important;
+            }
+
+            .form-label {
+                font-size: 8pt;
+                margin-bottom: 0.2rem;
+            }
+
+            .sub-section {
+                background: #f8fafc !important;
+                padding: 0.75rem;
+                margin-bottom: 0.5rem;
+                border: 1px solid #e2e8f0;
+            }
+
+            .sub-section-title {
+                font-size: 9pt;
+                margin-bottom: 0.5rem;
+            }
+
+            .location-list {
+                font-size: 8pt;
+            }
+
+            .location-list li {
+                margin-bottom: 0.2rem;
+            }
+
+            .chart-container {
+                height: 200px !important;
+                page-break-inside: avoid;
+            }
+
+            .staff-table {
+                font-size: 8pt;
+            }
+
+            .staff-table th {
+                background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%) !important;
+                padding: 0.4rem;
+                font-size: 7pt;
+            }
+
+            .staff-table td {
+                padding: 0.3rem;
+            }
+
+            .staff-table .table-input {
+                width: 40px;
+                font-size: 8pt;
+                padding: 0.2rem;
+            }
+
+            .staff-table .grand-total {
+                background: linear-gradient(135deg, #3182ce 0%, #2b6cb0 100%) !important;
+            }
+
+            .full-width {
+                page-break-before: auto;
+            }
+
+            .notes-section {
+                page-break-inside: avoid;
+            }
+
+            .notes-textarea {
+                border: 1px solid #ccc !important;
+                background: #fafafa !important;
+                min-height: 80px;
+                font-size: 9pt;
+            }
+
+            .traffic-calming-layout {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+            }
+
+            .tc-district-section {
+                background: #f8fafc !important;
+            }
+
+            .badge {
+                padding: 0.15rem 0.4rem;
+                font-size: 6pt;
+            }
+
+            .badge.warning {
+                background: #f6e05e !important;
+                color: #744210 !important;
+            }
+
+            /* Print footer */
+            .print-footer {
+                display: block !important;
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                text-align: center;
+                font-size: 8pt;
+                color: #718096;
+                padding: 0.5rem;
+                border-top: 1px solid #e2e8f0;
+                background: white;
+            }
+
+            /* Hide charts in print for cleaner look - optional */
+            /* .chart-row { display: none !important; } */
+        }
+
+        .print-footer {
+            display: none;
+        }
+
+        /* Charts Row */
+        .chart-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .chart-card-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .header-meta {
+                text-align: center;
+            }
+
+            .btn-group {
+                justify-content: center;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Traffic Engineering Division</h1>
+            </div>
+            <div class="header-meta">
+                <div class="last-updated">Last Updated: <span id="lastUpdated">-</span></div>
+                <div class="btn-group" style="margin-top: 0.75rem;">
+                    <button class="btn btn-save" onclick="saveData()">
+                        <span>💾</span> Save
+                    </button>
+                    <button class="btn btn-print" onclick="printReport()">
+                        <span>🖨️</span> Print PDF
+                    </button>
+                    <button class="btn btn-reset" onclick="resetToDefault()">
+                        <span>🔄</span> Reset
+                    </button>
+                    <button class="btn btn-clear" onclick="clearAll()">
+                        <span>🗑️</span> Clear All
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card signal">
+                <div class="summary-card-label">Total Signal Locations</div>
+                <div class="summary-card-value" id="totalSignals">152</div>
+            </div>
+            <div class="summary-card detection">
+                <div class="summary-card-label">Detection Systems</div>
+                <div class="summary-card-value" id="totalDetection">142</div>
+            </div>
+            <div class="summary-card pedestrian">
+                <div class="summary-card-label">Ped Facilities</div>
+                <div class="summary-card-value" id="totalPed">34</div>
+            </div>
+            <div class="summary-card lighting">
+                <div class="summary-card-label">Total Luminaires</div>
+                <div class="summary-card-value" id="totalLuminaires">398</div>
+            </div>
+            <div class="summary-card" style="border-left-color: #e53e3e;">
+                <div class="summary-card-label">Speed Cushions</div>
+                <div class="summary-card-value" id="totalSpeedCushions">539</div>
+            </div>
+            <div class="summary-card" style="border-left-color: #319795;">
+                <div class="summary-card-label">Bike Lane Miles</div>
+                <div class="summary-card-value" id="totalBikeLanes">24.5</div>
+            </div>
+            <div class="summary-card" style="border-left-color: #718096;">
+                <div class="summary-card-label">Guardrail Maintained</div>
+                <div class="summary-card-value" id="totalGuardrail">916</div>
+            </div>
+        </div>
+
+        <!-- Reporting Years Configuration -->
+        <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #f0f7ff 0%, #e8f4f8 100%);">
+            <div class="card-header" style="background: linear-gradient(135deg, #2c5282 0%, #3182ce 100%);">
+                <span class="card-header-icon">📅</span> Reporting Years Configuration
+            </div>
+            <div class="card-body">
+                <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">Set the reporting years for year-by-year comparisons. These years will be used across all sections.</p>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label class="form-label">Year 1 (Oldest)</label>
+                        <input type="number" class="form-input" id="reportYear1" value="2023" onchange="updateYearLabels()" style="font-weight: 600;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year 2 (Middle)</label>
+                        <input type="number" class="form-input" id="reportYear2" value="2024" onchange="updateYearLabels()" style="font-weight: 600;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Year 3 (Current)</label>
+                        <input type="number" class="form-input" id="reportYear3" value="2025" onchange="updateYearLabels()" style="font-weight: 600;">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="dashboard-grid">
+            <!-- Signal Infrastructure -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">🚦</span> Signal Infrastructure
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Mast Arm Intersections</label>
+                            <input type="number" class="form-input" id="mastArm" value="139" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Span Wire Intersections</label>
+                            <input type="number" class="form-input" id="spanWire" value="13" onchange="updateCalculations()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">FYA (Flashing Yellow Arrow)</label>
+                            <input type="number" class="form-input" id="fya" value="60" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Battery Backup Locations</label>
+                            <input type="text" class="form-input" id="batteryBackup" value="Every intersection">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📅</span> Year-by-Year Total Signals</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Total</label>
+                                <input type="number" class="form-input" id="signal2023" value="145" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Total</label>
+                                <input type="number" class="form-input" id="signal2024" value="150" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Total</label>
+                                <input type="number" class="form-input" id="signal2025" value="152" onchange="updateTrendCharts()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detection Systems -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">📡</span> Detection Systems
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label class="form-label">Loop Detection Intersections</label>
+                        <input type="number" class="form-input" id="loopDetection" value="99" onchange="updateCalculations()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Video Detection Intersections</label>
+                        <input type="number" class="form-input" id="videoDetection" value="40" onchange="updateCalculations()">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Loop Detection Running Phase</label>
+                        <input type="number" class="form-input" id="loopPhase" value="3" onchange="updateCalculations()">
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📹</span> CCTV Cameras</div>
+                        <div class="form-group">
+                            <label class="form-label">Number of Locations</label>
+                            <input type="number" class="form-input" id="cctvLocations" value="2" style="width: 120px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedestrian Facilities -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">🚶</span> Pedestrian Facilities
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Pedestrian Flashers</label>
+                            <input type="number" class="form-input" id="pedFlashers" value="32" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">HAWK Ped Signals</label>
+                            <input type="number" class="form-input" id="hawkSignals" value="2" onchange="updateCalculations()">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>🔘</span> Pedestrian Push Buttons</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Sets</label>
+                                <input type="number" class="form-input" id="pedButtonSets" value="197" onchange="updateCalculations()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">At Intersections</label>
+                                <input type="number" class="form-input" id="pedButtonIntersections" value="94">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📅</span> Year-by-Year Total Facilities</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Total</label>
+                                <input type="number" class="form-input" id="ped2023" value="28" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Total</label>
+                                <input type="number" class="form-input" id="ped2024" value="32" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Total</label>
+                                <input type="number" class="form-input" id="ped2025" value="34" onchange="updateTrendCharts()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lighting Infrastructure -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">💡</span> Lighting Infrastructure
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Luminaires</label>
+                            <input type="number" class="form-input" id="luminaires" value="398" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Street Lighting Sets</label>
+                            <input type="number" class="form-input" id="streetLightingSets" value="3">
+                        </div>
+                    </div>
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>☀️</span> Solar Lighting</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Locations</label>
+                                <input type="number" class="form-input" id="solarLocations" value="17">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Approx. Total Lights</label>
+                                <input type="number" class="form-input" id="solarLights" value="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traffic Calming Program -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <span class="card-header-icon">🛑</span> Traffic Calming Program
+                </div>
+                <div class="card-body">
+                    <div class="form-row" style="margin-bottom: 1rem;">
+                        <div class="tc-district-section" style="flex: 1;">
+                            <div class="sub-section-title"><span>📊</span> By District</div>
+                            <div class="district-grid">
+                                <div class="district-item">
+                                    <label class="form-label">Brookland</label>
+                                    <input type="number" class="form-input" id="brookland" value="106" onchange="updateDistrictTotal()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label">Fairfield</label>
+                                    <input type="number" class="form-input" id="fairfield" value="91" onchange="updateDistrictTotal()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label">Three Chopt</label>
+                                    <input type="number" class="form-input" id="threeChopt" value="115" onchange="updateDistrictTotal()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label">Tuckahoe</label>
+                                    <input type="number" class="form-input" id="tuckahoe" value="137" onchange="updateDistrictTotal()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label">Varina</label>
+                                    <input type="number" class="form-input" id="varina" value="90" onchange="updateDistrictTotal()">
+                                </div>
+                                <div class="district-item" style="background: #e8f4f8; padding: 0.5rem; border-radius: 8px;">
+                                    <label class="form-label" style="font-weight: 700; color: var(--primary-color);">District Total</label>
+                                    <div style="font-size: 1.25rem; font-weight: 700; color: var(--accent-color);" id="districtTotal">539</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="tc-district-section" style="flex: 1;">
+                            <div class="sub-section-title"><span>📅</span> Year-by-Year Data</div>
+                            <div class="district-grid">
+                                <div class="district-item">
+                                    <label class="form-label year-label-1">2023 Total</label>
+                                    <input type="number" class="form-input" id="tc2023" value="480" onchange="updateTrendCharts()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label year-label-2">2024 Total</label>
+                                    <input type="number" class="form-input" id="tc2024" value="520" onchange="updateTrendCharts()">
+                                </div>
+                                <div class="district-item">
+                                    <label class="form-label year-label-3">2025 Total</label>
+                                    <input type="number" class="form-input" id="tc2025" value="539" onchange="updateTrendCharts()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bike Lane & Guardrail Infrastructure -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">🚴</span> Bike Lane & Guardrail Infrastructure
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Number of Bike Lane Projects</label>
+                            <input type="number" class="form-input" id="bikeLaneProjects" value="12">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bike Lane Miles</label>
+                            <input type="number" class="form-input" id="bikeLaneMiles" value="24.5" step="0.1" onchange="updateCalculations()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Guardrail Maintained (Linear Feet)</label>
+                            <input type="number" class="form-input" id="guardrailMaintained" value="916" onchange="updateGuardrail()">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📅</span> Year-by-Year Bike Lane Miles</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Miles</label>
+                                <input type="number" class="form-input" id="bike2023" value="18.5" step="0.1" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Miles</label>
+                                <input type="number" class="form-input" id="bike2024" value="22.0" step="0.1" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Miles</label>
+                                <input type="number" class="form-input" id="bike2025" value="24.5" step="0.1" onchange="updateTrendCharts()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Review Statistics -->
+            <div class="card">
+                <div class="card-header">
+                    <span class="card-header-icon">📋</span> Plan Review Statistics
+                </div>
+                <div class="card-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Reviews</label>
+                            <input type="number" class="form-input" id="totalReviews" value="716">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">POD Reviews</label>
+                            <input type="number" class="form-input" id="podReviews" value="546">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subdivision Reviews</label>
+                            <input type="number" class="form-input" id="subdivisionReviews" value="170">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📅</span> Year-by-Year Comparison</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Reviews</label>
+                                <input type="number" class="form-input" id="pr2023" value="650" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Reviews</label>
+                                <input type="number" class="form-input" id="pr2024" value="716" onchange="updateTrendCharts()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Reviews</label>
+                                <input type="number" class="form-input" id="pr2025" value="780" onchange="updateTrendCharts()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staff & Fleet -->
+            <div class="card full-width">
+                <div class="card-header">
+                    <span class="card-header-icon">👥</span> Staff & Fleet
+                </div>
+                <div class="card-body">
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>👤</span> Total Staffing</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Staff</label>
+                                <input type="number" class="form-input" id="totalStaff" value="38" onchange="updateStaffCalculations()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Vacancies</label>
+                                <input type="number" class="form-input" id="vacancies" value="0">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <hr class="section-divider">
+                    
+                    <!-- Staff Table -->
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>📊</span> Maintenance and Operation Breakdown</div>
+                        <div class="staff-table-container">
+                            <table class="staff-table">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Engineering Study</th>
+                                        <th>Eng</th>
+                                        <th>Signal</th>
+                                        <th>Signal Drawing</th>
+                                        <th>Sign</th>
+                                        <th>Marking</th>
+                                        <th>Sign & Marking</th>
+                                        <th>Row Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="position-label">Eng</td>
+                                        <td><input type="number" class="table-input" id="eng_engStudy" value="2" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_eng" value="2" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_signal" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_signalDraw" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_sign" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_marking" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="eng_signMarking" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td class="row-total" id="engRowTotal">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="position-label">Shop Manager</td>
+                                        <td><input type="number" class="table-input" id="mgr_engStudy" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_eng" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_signal" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_signalDraw" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_sign" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_marking" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="mgr_signMarking" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td class="row-total" id="mgrRowTotal">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="position-label">Supervisor</td>
+                                        <td><input type="number" class="table-input" id="sup_engStudy" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_eng" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_signal" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_signalDraw" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_sign" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_marking" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="sup_signMarking" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td class="row-total" id="supRowTotal">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="position-label">Tech</td>
+                                        <td><input type="number" class="table-input" id="tech_engStudy" value="4" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_eng" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_signal" value="7" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_signalDraw" value="1" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_sign" value="7" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_marking" value="9" onchange="updateStaffCalculations()"></td>
+                                        <td><input type="number" class="table-input" id="tech_signMarking" value="0" onchange="updateStaffCalculations()"></td>
+                                        <td class="row-total" id="techRowTotal">28</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <td class="position-label"><strong>Column Total</strong></td>
+                                        <td class="col-total" id="engStudyTotal">7</td>
+                                        <td class="col-total" id="engTotal">2</td>
+                                        <td class="col-total" id="signalTotal">8</td>
+                                        <td class="col-total" id="signalDrawTotal">1</td>
+                                        <td class="col-total" id="signTotal">8</td>
+                                        <td class="col-total" id="markingTotal">10</td>
+                                        <td class="col-total" id="signMarkingTotal">1</td>
+                                        <td class="grand-total" id="grandTotal">37</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                    
+                    <hr class="section-divider">
+                    
+                    <!-- Fleet -->
+                    <div class="sub-section">
+                        <div class="sub-section-title"><span>🚛</span> Fleet</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Engineering Vehicles</label>
+                                <input type="number" class="form-input" id="engVehicles" value="7">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Signal Vehicles</label>
+                                <input type="number" class="form-input" id="signalVehicles" value="7">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sign Vehicles</label>
+                                <input type="number" class="form-input" id="signVehicles" value="12">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Trucks</label>
+                                <input type="number" class="form-input" id="totalTrucks" value="26">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Leased</label>
+                                <input type="number" class="form-input" id="leasedVehicles" value="15">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Owned</label>
+                                <input type="number" class="form-input" id="ownedVehicles" value="7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📊</span> Signal Infrastructure Distribution</div>
+                <div class="chart-container">
+                    <canvas id="signalChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📊</span> Detection Systems Overview</div>
+                <div class="chart-container">
+                    <canvas id="detectionChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📊</span> Traffic Calming by District</div>
+                <div class="chart-container">
+                    <canvas id="districtChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📊</span> Staff Distribution</div>
+                <div class="chart-container">
+                    <canvas id="staffChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trend Charts Row -->
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📈</span> Traffic Calming Year-by-Year Trend</div>
+                <div class="chart-container">
+                    <canvas id="tcTrendChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📈</span> Plan Review Year-by-Year Trend</div>
+                <div class="chart-container">
+                    <canvas id="prTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- More Trend Charts Row -->
+        <div class="chart-row">
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📈</span> Signal Infrastructure Year-by-Year Trend</div>
+                <div class="chart-container">
+                    <canvas id="signalTrendChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📈</span> Pedestrian Facilities Year-by-Year Trend</div>
+                <div class="chart-container">
+                    <canvas id="pedTrendChart"></canvas>
+                </div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-card-title"><span>📈</span> Bike Lane Miles Year-by-Year Trend</div>
+                <div class="chart-container">
+                    <canvas id="bikeTrendChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notes Section -->
+        <div class="card notes-section">
+            <div class="card-header">
+                <span class="card-header-icon">📝</span> Notes & Remarks
+            </div>
+            <div class="card-body">
+                <textarea class="notes-textarea" id="notes" placeholder="Enter any additional notes, observations, or action items here..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <!-- Print Footer -->
+    <div class="print-footer">
+        Traffic Engineering Division • Henrico County Department of Public Works • Confidential
+    </div>
+
+    <div class="toast" id="toast">Data saved successfully!</div>
+
+    <script>
+        // Chart instances
+        let charts = {};
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadData();
+            updateCalculations();
+            updateStaffCalculations();
+            updateDistrictTotal();
+            updateGuardrail();
+            initCharts();
+            updateYearLabels();
+        });
+
+        // Print Report
+        function printReport() {
+            // Update charts before printing
+            if (charts.signal) updateCharts();
+            
+            // Small delay to ensure charts are rendered
+            setTimeout(() => {
+                window.print();
+            }, 300);
+        }
+
+        // Save Data
+        function saveData() {
+            const data = {};
+            document.querySelectorAll('.form-input, .table-input, .notes-textarea').forEach(input => {
+                data[input.id] = input.value;
+            });
+            data.lastUpdated = new Date().toLocaleString();
+            localStorage.setItem('trafficInventory', JSON.stringify(data));
+            document.getElementById('lastUpdated').textContent = data.lastUpdated;
+            showToast('Data saved successfully!');
+        }
+
+        // Load Data
+        function loadData() {
+            const saved = localStorage.getItem('trafficInventory');
+            if (saved) {
+                const data = JSON.parse(saved);
+                Object.keys(data).forEach(key => {
+                    const element = document.getElementById(key);
+                    if (element) {
+                        element.value = data[key];
+                    }
+                });
+                if (data.lastUpdated) {
+                    document.getElementById('lastUpdated').textContent = data.lastUpdated;
+                }
+            } else {
+                document.getElementById('lastUpdated').textContent = 'Not yet saved';
+            }
+        }
+
+        // Update Year Labels across all sections
+        function updateYearLabels() {
+            const year1 = document.getElementById('reportYear1').value;
+            const year2 = document.getElementById('reportYear2').value;
+            const year3 = document.getElementById('reportYear3').value;
+            
+            // Update all year-label-1 elements
+            document.querySelectorAll('.year-label-1').forEach(label => {
+                const currentText = label.textContent;
+                const suffix = currentText.replace(/^\d{4}\s*/, '');
+                label.textContent = year1 + ' ' + suffix;
+            });
+            
+            // Update all year-label-2 elements
+            document.querySelectorAll('.year-label-2').forEach(label => {
+                const currentText = label.textContent;
+                const suffix = currentText.replace(/^\d{4}\s*/, '');
+                label.textContent = year2 + ' ' + suffix;
+            });
+            
+            // Update all year-label-3 elements
+            document.querySelectorAll('.year-label-3').forEach(label => {
+                const currentText = label.textContent;
+                const suffix = currentText.replace(/^\d{4}\s*/, '');
+                label.textContent = year3 + ' ' + suffix;
+            });
+            
+            // Update all chart labels
+            const yearLabels = [year1, year2, year3];
+            if (charts.tcTrend) {
+                charts.tcTrend.data.labels = yearLabels;
+                charts.tcTrend.update();
+            }
+            if (charts.prTrend) {
+                charts.prTrend.data.labels = yearLabels;
+                charts.prTrend.update();
+            }
+            if (charts.signalTrend) {
+                charts.signalTrend.data.labels = yearLabels;
+                charts.signalTrend.update();
+            }
+            if (charts.pedTrend) {
+                charts.pedTrend.data.labels = yearLabels;
+                charts.pedTrend.update();
+            }
+            if (charts.bikeTrend) {
+                charts.bikeTrend.data.labels = yearLabels;
+                charts.bikeTrend.update();
+            }
+        }
+
+        // Reset to Default
+        function resetToDefault() {
+            if (confirm('Reset all values to defaults? This cannot be undone.')) {
+                localStorage.removeItem('trafficInventory');
+                location.reload();
+            }
+        }
+
+        // Clear All
+        function clearAll() {
+            if (confirm('Clear all data? This will set all values to 0.')) {
+                document.querySelectorAll('.form-input[type="number"], .table-input').forEach(input => {
+                    input.value = 0;
+                });
+                document.querySelectorAll('.form-input[type="text"]').forEach(input => {
+                    input.value = '';
+                });
+                document.getElementById('notes').value = '';
+                updateCalculations();
+                updateStaffCalculations();
+                updateDistrictTotal();
+                updateGuardrail();
+                showToast('All data cleared');
+            }
+        }
+
+        // Show Toast
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        // Update Summary Calculations
+        function updateCalculations() {
+            const mastArm = parseInt(document.getElementById('mastArm').value) || 0;
+            const spanWire = parseInt(document.getElementById('spanWire').value) || 0;
+            document.getElementById('totalSignals').textContent = mastArm + spanWire;
+
+            const loop = parseInt(document.getElementById('loopDetection').value) || 0;
+            const video = parseInt(document.getElementById('videoDetection').value) || 0;
+            const phase = parseInt(document.getElementById('loopPhase').value) || 0;
+            document.getElementById('totalDetection').textContent = loop + video + phase;
+
+            const flashers = parseInt(document.getElementById('pedFlashers').value) || 0;
+            const hawk = parseInt(document.getElementById('hawkSignals').value) || 0;
+            document.getElementById('totalPed').textContent = flashers + hawk;
+
+            const luminaires = parseInt(document.getElementById('luminaires').value) || 0;
+            document.getElementById('totalLuminaires').textContent = luminaires;
+
+            // Update bike lane miles summary
+            const bikeLaneMiles = parseFloat(document.getElementById('bikeLaneMiles').value) || 0;
+            document.getElementById('totalBikeLanes').textContent = bikeLaneMiles;
+
+            if (charts.signal) updateCharts();
+        }
+
+        // Update District Total
+        function updateDistrictTotal() {
+            const brookland = parseInt(document.getElementById('brookland').value) || 0;
+            const fairfield = parseInt(document.getElementById('fairfield').value) || 0;
+            const threeChopt = parseInt(document.getElementById('threeChopt').value) || 0;
+            const tuckahoe = parseInt(document.getElementById('tuckahoe').value) || 0;
+            const varina = parseInt(document.getElementById('varina').value) || 0;
+            
+            const total = brookland + fairfield + threeChopt + tuckahoe + varina;
+            document.getElementById('districtTotal').textContent = total;
+            
+            // Speed Cushions shows district total
+            document.getElementById('totalSpeedCushions').textContent = total;
+            
+            if (charts.district) updateCharts();
+        }
+
+        // Update Guardrail
+        function updateGuardrail() {
+            const guardrail = parseInt(document.getElementById('guardrailMaintained').value) || 0;
+            document.getElementById('totalGuardrail').textContent = guardrail;
+        }
+
+        // Update Staff Table Calculations
+        function updateStaffCalculations() {
+            const positions = ['eng', 'mgr', 'sup', 'tech'];
+            const departments = ['engStudy', 'eng', 'signal', 'signalDraw', 'sign', 'marking', 'signMarking'];
+            
+            positions.forEach(pos => {
+                let rowTotal = 0;
+                departments.forEach(dept => {
+                    const val = parseInt(document.getElementById(`${pos}_${dept}`).value) || 0;
+                    rowTotal += val;
+                });
+                document.getElementById(`${pos}RowTotal`).textContent = rowTotal;
+            });
+            
+            let grandTotal = 0;
+            departments.forEach(dept => {
+                let colTotal = 0;
+                positions.forEach(pos => {
+                    const val = parseInt(document.getElementById(`${pos}_${dept}`).value) || 0;
+                    colTotal += val;
+                });
+                document.getElementById(`${dept}Total`).textContent = colTotal;
+                grandTotal += colTotal;
+            });
+            
+            document.getElementById('grandTotal').textContent = grandTotal;
+            
+            if (charts.staff) updateCharts();
+        }
+
+        // Initialize Charts
+        function initCharts() {
+            const signalCtx = document.getElementById('signalChart').getContext('2d');
+            charts.signal = new Chart(signalCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mast Arm', 'Span Wire', 'FYA Signals'],
+                    datasets: [{
+                        data: [
+                            parseInt(document.getElementById('mastArm').value) || 0,
+                            parseInt(document.getElementById('spanWire').value) || 0,
+                            parseInt(document.getElementById('fya').value) || 0
+                        ],
+                        backgroundColor: ['#3182ce', '#38a169', '#d69e2e'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            const detectionCtx = document.getElementById('detectionChart').getContext('2d');
+            charts.detection = new Chart(detectionCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Loop Detection', 'Video Detection', 'Loop Phase'],
+                    datasets: [{
+                        label: 'Intersections',
+                        data: [
+                            parseInt(document.getElementById('loopDetection').value) || 0,
+                            parseInt(document.getElementById('videoDetection').value) || 0,
+                            parseInt(document.getElementById('loopPhase').value) || 0
+                        ],
+                        backgroundColor: ['#3182ce', '#38a169', '#805ad5'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            const districtCtx = document.getElementById('districtChart').getContext('2d');
+            charts.district = new Chart(districtCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Brookland', 'Fairfield', 'Three Chopt', 'Tuckahoe', 'Varina'],
+                    datasets: [{
+                        label: 'Streets',
+                        data: [
+                            parseInt(document.getElementById('brookland').value) || 0,
+                            parseInt(document.getElementById('fairfield').value) || 0,
+                            parseInt(document.getElementById('threeChopt').value) || 0,
+                            parseInt(document.getElementById('tuckahoe').value) || 0,
+                            parseInt(document.getElementById('varina').value) || 0
+                        ],
+                        backgroundColor: '#3182ce',
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true } }
+                }
+            });
+
+            const staffCtx = document.getElementById('staffChart').getContext('2d');
+            charts.staff = new Chart(staffCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Eng Study', 'Eng', 'Signal', 'Signal Draw', 'Sign', 'Marking', 'Sign & Mark'],
+                    datasets: [{
+                        label: 'Staff',
+                        data: [
+                            parseInt(document.getElementById('engStudyTotal').textContent) || 0,
+                            parseInt(document.getElementById('engTotal').textContent) || 0,
+                            parseInt(document.getElementById('signalTotal').textContent) || 0,
+                            parseInt(document.getElementById('signalDrawTotal').textContent) || 0,
+                            parseInt(document.getElementById('signTotal').textContent) || 0,
+                            parseInt(document.getElementById('markingTotal').textContent) || 0,
+                            parseInt(document.getElementById('signMarkingTotal').textContent) || 0
+                        ],
+                        backgroundColor: ['#3182ce', '#4299e1', '#38a169', '#805ad5', '#d69e2e', '#e53e3e', '#319795'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Traffic Calming Trend Chart
+            const year1 = document.getElementById('reportYear1').value;
+            const year2 = document.getElementById('reportYear2').value;
+            const year3 = document.getElementById('reportYear3').value;
+            
+            const tcTrendCtx = document.getElementById('tcTrendChart').getContext('2d');
+            charts.tcTrend = new Chart(tcTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [year1, year2, year3],
+                    datasets: [{
+                        label: 'Traffic Calming Streets',
+                        data: [
+                            parseInt(document.getElementById('tc2023').value) || 0,
+                            parseInt(document.getElementById('tc2024').value) || 0,
+                            parseInt(document.getElementById('tc2025').value) || 0
+                        ],
+                        borderColor: '#e53e3e',
+                        backgroundColor: 'rgba(229, 62, 62, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#e53e3e',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Number of Streets' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    }
+                }
+            });
+
+            // Plan Review Trend Chart
+            const prTrendCtx = document.getElementById('prTrendChart').getContext('2d');
+            charts.prTrend = new Chart(prTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [year1, year2, year3],
+                    datasets: [{
+                        label: 'Plan Reviews',
+                        data: [
+                            parseInt(document.getElementById('pr2023').value) || 0,
+                            parseInt(document.getElementById('pr2024').value) || 0,
+                            parseInt(document.getElementById('pr2025').value) || 0
+                        ],
+                        borderColor: '#3182ce',
+                        backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#3182ce',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Number of Reviews' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    }
+                }
+            });
+
+            // Signal Infrastructure Trend Chart
+            const signalTrendCtx = document.getElementById('signalTrendChart').getContext('2d');
+            charts.signalTrend = new Chart(signalTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [year1, year2, year3],
+                    datasets: [{
+                        label: 'Total Signals',
+                        data: [
+                            parseInt(document.getElementById('signal2023').value) || 0,
+                            parseInt(document.getElementById('signal2024').value) || 0,
+                            parseInt(document.getElementById('signal2025').value) || 0
+                        ],
+                        borderColor: '#38a169',
+                        backgroundColor: 'rgba(56, 161, 105, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#38a169',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Number of Signals' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    }
+                }
+            });
+
+            // Pedestrian Facilities Trend Chart
+            const pedTrendCtx = document.getElementById('pedTrendChart').getContext('2d');
+            charts.pedTrend = new Chart(pedTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [year1, year2, year3],
+                    datasets: [{
+                        label: 'Pedestrian Facilities',
+                        data: [
+                            parseInt(document.getElementById('ped2023').value) || 0,
+                            parseInt(document.getElementById('ped2024').value) || 0,
+                            parseInt(document.getElementById('ped2025').value) || 0
+                        ],
+                        borderColor: '#d69e2e',
+                        backgroundColor: 'rgba(214, 158, 46, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#d69e2e',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Number of Facilities' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    }
+                }
+            });
+
+            // Bike Lane Trend Chart
+            const bikeTrendCtx = document.getElementById('bikeTrendChart').getContext('2d');
+            charts.bikeTrend = new Chart(bikeTrendCtx, {
+                type: 'line',
+                data: {
+                    labels: [year1, year2, year3],
+                    datasets: [{
+                        label: 'Bike Lane Miles',
+                        data: [
+                            parseFloat(document.getElementById('bike2023').value) || 0,
+                            parseFloat(document.getElementById('bike2024').value) || 0,
+                            parseFloat(document.getElementById('bike2025').value) || 0
+                        ],
+                        borderColor: '#319795',
+                        backgroundColor: 'rgba(49, 151, 149, 0.1)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.3,
+                        pointBackgroundColor: '#319795',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: true, position: 'top' }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: { display: true, text: 'Miles' }
+                        },
+                        x: {
+                            title: { display: true, text: 'Year' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update Charts
+        function updateCharts() {
+            charts.signal.data.datasets[0].data = [
+                parseInt(document.getElementById('mastArm').value) || 0,
+                parseInt(document.getElementById('spanWire').value) || 0,
+                parseInt(document.getElementById('fya').value) || 0
+            ];
+            charts.signal.update();
+
+            charts.detection.data.datasets[0].data = [
+                parseInt(document.getElementById('loopDetection').value) || 0,
+                parseInt(document.getElementById('videoDetection').value) || 0,
+                parseInt(document.getElementById('loopPhase').value) || 0
+            ];
+            charts.detection.update();
+
+            charts.district.data.datasets[0].data = [
+                parseInt(document.getElementById('brookland').value) || 0,
+                parseInt(document.getElementById('fairfield').value) || 0,
+                parseInt(document.getElementById('threeChopt').value) || 0,
+                parseInt(document.getElementById('tuckahoe').value) || 0,
+                parseInt(document.getElementById('varina').value) || 0
+            ];
+            charts.district.update();
+
+            charts.staff.data.datasets[0].data = [
+                parseInt(document.getElementById('engStudyTotal').textContent) || 0,
+                parseInt(document.getElementById('engTotal').textContent) || 0,
+                parseInt(document.getElementById('signalTotal').textContent) || 0,
+                parseInt(document.getElementById('signalDrawTotal').textContent) || 0,
+                parseInt(document.getElementById('signTotal').textContent) || 0,
+                parseInt(document.getElementById('markingTotal').textContent) || 0,
+                parseInt(document.getElementById('signMarkingTotal').textContent) || 0
+            ];
+            charts.staff.update();
+        }
+
+        // Update Trend Charts
+        function updateTrendCharts() {
+            if (charts.tcTrend) {
+                charts.tcTrend.data.datasets[0].data = [
+                    parseInt(document.getElementById('tc2023').value) || 0,
+                    parseInt(document.getElementById('tc2024').value) || 0,
+                    parseInt(document.getElementById('tc2025').value) || 0
+                ];
+                charts.tcTrend.update();
+            }
+
+            if (charts.prTrend) {
+                charts.prTrend.data.datasets[0].data = [
+                    parseInt(document.getElementById('pr2023').value) || 0,
+                    parseInt(document.getElementById('pr2024').value) || 0,
+                    parseInt(document.getElementById('pr2025').value) || 0
+                ];
+                charts.prTrend.update();
+            }
+
+            if (charts.signalTrend) {
+                charts.signalTrend.data.datasets[0].data = [
+                    parseInt(document.getElementById('signal2023').value) || 0,
+                    parseInt(document.getElementById('signal2024').value) || 0,
+                    parseInt(document.getElementById('signal2025').value) || 0
+                ];
+                charts.signalTrend.update();
+            }
+
+            if (charts.pedTrend) {
+                charts.pedTrend.data.datasets[0].data = [
+                    parseInt(document.getElementById('ped2023').value) || 0,
+                    parseInt(document.getElementById('ped2024').value) || 0,
+                    parseInt(document.getElementById('ped2025').value) || 0
+                ];
+                charts.pedTrend.update();
+            }
+
+            if (charts.bikeTrend) {
+                charts.bikeTrend.data.datasets[0].data = [
+                    parseFloat(document.getElementById('bike2023').value) || 0,
+                    parseFloat(document.getElementById('bike2024').value) || 0,
+                    parseFloat(document.getElementById('bike2025').value) || 0
+                ];
+                charts.bikeTrend.update();
+            }
+        }
+
+        document.querySelectorAll('.form-input, .table-input').forEach(input => {
+            input.addEventListener('change', updateCharts);
+        });
+    </script>
+</body>
+</html>
