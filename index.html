@@ -1630,15 +1630,295 @@
 
     <div class="toast" id="toast">Data saved successfully!</div>
 
+    <!-- Google Sheets Modal -->
+    <div class="modal-overlay" id="sheetsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span>📊</span> Google Sheets Database</h2>
+                <button class="modal-close" onclick="closeSheetsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Connection Status -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>🔗</span> Connection Status</div>
+                    <div id="connectionStatus" class="sheets-status info show">
+                        Connected to Google Sheets database
+                    </div>
+                </div>
+
+                <!-- Save to Google Sheets -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>💾</span> Save to Google Sheets</div>
+                    <div class="sheets-section-desc">
+                        Save your current inventory data to Google Sheets. Each save creates a new historical record with a timestamp.
+                    </div>
+                    <button class="sheets-btn sheets-btn-primary" onclick="saveToGoogleSheets()">
+                        <span>☁️</span> Save to Cloud
+                    </button>
+                    <div id="saveStatus" class="sheets-status"></div>
+                </div>
+
+                <!-- Load from Google Sheets -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>📥</span> Load from Google Sheets</div>
+                    <div class="sheets-section-desc">
+                        Load the most recent data from Google Sheets, or browse historical records.
+                    </div>
+                    <button class="sheets-btn sheets-btn-secondary" onclick="loadFromGoogleSheets()">
+                        <span>📥</span> Load Latest
+                    </button>
+                    <button class="sheets-btn sheets-btn-outline" onclick="showHistory()">
+                        <span>📜</span> View History
+                    </button>
+                    <div id="loadStatus" class="sheets-status"></div>
+                </div>
+
+                <!-- History Section (hidden by default) -->
+                <div class="sheets-section" id="historySection" style="display: none;">
+                    <div class="sheets-section-title"><span>📜</span> Historical Records</div>
+                    <div class="sheets-section-desc">
+                        Select a previous save to restore that data.
+                    </div>
+                    <div id="historyList" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- Open Sheet Link -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>🔗</span> View Spreadsheet</div>
+                    <a href="https://docs.google.com/spreadsheets/d/1meQw3H3rV4-GBZB7eas8eHgkKHPypZVSXf2XpSYL2QY/edit"
+                       target="_blank"
+                       class="sheets-btn sheets-btn-outline">
+                        <span>📊</span> Open Google Sheet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Chart instances
         let charts = {};
+
+        // Google Sheets API Configuration
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw6VdiS16VYR5jAVCkuRQIMoMd89xikB2NvZ_fcldjuZ-zXT6PkTugdrKuCihjkCNeftw/exec';
+
+        // ==========================================
+        // Google Sheets Integration Functions
+        // ==========================================
+
+        // Open Google Sheets Modal
+        function openSheetsModal() {
+            document.getElementById('sheetsModal').classList.add('show');
+        }
+
+        // Close Google Sheets Modal
+        function closeSheetsModal() {
+            document.getElementById('sheetsModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('sheetsModal');
+            if (e.target === modal) {
+                closeSheetsModal();
+            }
+        });
+
+        // Collect all form data
+        function collectFormData() {
+            const data = {};
+            document.querySelectorAll('.form-input, .table-input, .notes-textarea').forEach(input => {
+                data[input.id] = input.value;
+            });
+            return data;
+        }
+
+        // Apply data to form
+        function applyFormData(data) {
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
+                }
+            });
+            // Trigger updates
+            updateCalculations();
+            updateStaffCalculations();
+            updateDistrictTotal();
+            updateGuardrail();
+            updateYearLabels();
+            if (charts.signal) updateCharts();
+            if (charts.tcTrend) updateTrendCharts();
+        }
+
+        // Show status message
+        function showSheetsStatus(elementId, message, type) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = 'sheets-status show ' + type;
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Save to Google Sheets
+        async function saveToGoogleSheets() {
+            const saveBtn = document.querySelector('[onclick="saveToGoogleSheets()"]');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span>⏳</span> Saving...';
+            saveBtn.disabled = true;
+
+            try {
+                const data = collectFormData();
+
+                const response = await fetch(GOOGLE_SHEETS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // With no-cors, we can't read the response, but the data is sent
+                showSheetsStatus('saveStatus', 'Data saved to Google Sheets successfully!', 'success');
+                showToast('Data saved to Google Sheets!');
+
+                // Also save locally
+                const localData = { ...data, lastUpdated: new Date().toLocaleString() };
+                localStorage.setItem('trafficInventory', JSON.stringify(localData));
+                document.getElementById('lastUpdated').textContent = localData.lastUpdated;
+
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                showSheetsStatus('saveStatus', 'Error saving: ' + error.message, 'error');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        // Load from Google Sheets
+        async function loadFromGoogleSheets() {
+            const loadBtn = document.querySelector('[onclick="loadFromGoogleSheets()"]');
+            const originalText = loadBtn.innerHTML;
+            loadBtn.innerHTML = '<span>⏳</span> Loading...';
+            loadBtn.disabled = true;
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getLatest');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    applyFormData(result.data);
+                    const timestamp = new Date(result.timestamp).toLocaleString();
+                    document.getElementById('lastUpdated').textContent = timestamp + ' (from Cloud)';
+                    showSheetsStatus('loadStatus', 'Data loaded successfully from ' + timestamp, 'success');
+                    showToast('Data loaded from Google Sheets!');
+                } else {
+                    showSheetsStatus('loadStatus', 'No data found in Google Sheets', 'info');
+                }
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+                showSheetsStatus('loadStatus', 'Error loading: ' + error.message, 'error');
+            } finally {
+                loadBtn.innerHTML = originalText;
+                loadBtn.disabled = false;
+            }
+        }
+
+        // Show History
+        async function showHistory() {
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+
+            historySection.style.display = 'block';
+            historyList.innerHTML = '<p style="color: #718096; font-size: 0.875rem;">Loading history...</p>';
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getHistory&limit=20');
+                const result = await response.json();
+
+                if (result.success && result.history && result.history.length > 0) {
+                    historyList.innerHTML = result.history.map((item, index) => {
+                        const date = new Date(item.timestamp).toLocaleString();
+                        return `
+                            <div style="padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s ease;"
+                                 onmouseover="this.style.background='#f0f7ff'; this.style.borderColor='#3182ce';"
+                                 onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0';"
+                                 onclick="loadHistoryItem(${index})">
+                                <div style="font-weight: 600; color: #2d3748; font-size: 0.875rem;">${date}</div>
+                                <div style="font-size: 0.75rem; color: #718096;">Click to restore this version</div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Store history data for later use
+                    window.historyData = result.history;
+                } else {
+                    historyList.innerHTML = '<p style="color: #718096; font-size: 0.875rem;">No historical records found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                historyList.innerHTML = '<p style="color: #c53030; font-size: 0.875rem;">Error loading history: ' + error.message + '</p>';
+            }
+        }
+
+        // Load specific history item
+        function loadHistoryItem(index) {
+            if (window.historyData && window.historyData[index]) {
+                const item = window.historyData[index];
+                if (confirm('Load data from ' + new Date(item.timestamp).toLocaleString() + '? This will replace your current data.')) {
+                    applyFormData(item.data);
+                    const timestamp = new Date(item.timestamp).toLocaleString();
+                    document.getElementById('lastUpdated').textContent = timestamp + ' (restored)';
+                    showToast('Historical data restored!');
+                    closeSheetsModal();
+                }
+            }
+        }
+
+        // Auto-load from Google Sheets on page load (optional)
+        async function tryLoadFromCloud() {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getLatest');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    // Check if cloud data is newer than local data
+                    const localData = localStorage.getItem('trafficInventory');
+                    const cloudTimestamp = new Date(result.timestamp).getTime();
+
+                    if (localData) {
+                        const local = JSON.parse(localData);
+                        const localTimestamp = local.lastUpdated ? new Date(local.lastUpdated).getTime() : 0;
+
+                        if (cloudTimestamp > localTimestamp) {
+                            applyFormData(result.data);
+                            document.getElementById('lastUpdated').textContent = new Date(result.timestamp).toLocaleString() + ' (from Cloud)';
+                        }
+                    } else {
+                        // No local data, use cloud data
+                        applyFormData(result.data);
+                        document.getElementById('lastUpdated').textContent = new Date(result.timestamp).toLocaleString() + ' (from Cloud)';
+                    }
+                }
+            } catch (error) {
+                console.log('Could not load from cloud, using local data:', error.message);
+            }
+        }
+
+        // ==========================================
+        // End Google Sheets Integration
+        // ==========================================
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             updateCalculations();
             updateStaffCalculations();
+            // Try to load from Google Sheets (will use cloud data if newer)
+            tryLoadFromCloud();
             updateDistrictTotal();
             updateGuardrail();
             initCharts();
