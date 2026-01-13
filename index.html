@@ -376,6 +376,200 @@
             margin-bottom: 0.35rem;
         }
 
+        /* Custom Asset Styles */
+        .btn-add-asset {
+            background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);
+            color: white;
+        }
+
+        .custom-assets-container {
+            margin-top: 1.5rem;
+        }
+
+        .custom-asset-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 1.5rem;
+            border-left: 5px solid #805ad5;
+        }
+
+        .custom-asset-header {
+            background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);
+            color: white;
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .custom-asset-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .custom-asset-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .custom-asset-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 0.4rem 0.75rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.2s ease;
+        }
+
+        .custom-asset-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .custom-asset-btn.delete {
+            background: rgba(229, 62, 62, 0.8);
+        }
+
+        .custom-asset-btn.delete:hover {
+            background: rgba(229, 62, 62, 1);
+        }
+
+        .custom-asset-body {
+            padding: 1.5rem;
+        }
+
+        .custom-field-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            align-items: flex-end;
+        }
+
+        .custom-field-row .form-group {
+            flex: 1;
+            margin-bottom: 0;
+        }
+
+        .add-field-btn {
+            background: #edf2f7;
+            border: 2px dashed #cbd5e0;
+            color: #718096;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            width: 100%;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .add-field-btn:hover {
+            border-color: #805ad5;
+            color: #805ad5;
+            background: #faf5ff;
+        }
+
+        .remove-field-btn {
+            background: #fed7d7;
+            border: none;
+            color: #c53030;
+            padding: 0.65rem 0.75rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .remove-field-btn:hover {
+            background: #fc8181;
+            color: white;
+        }
+
+        /* Asset Modal Styles */
+        .asset-modal-body {
+            padding: 1.5rem;
+        }
+
+        .asset-form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .asset-form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .asset-form-input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+        }
+
+        .asset-form-input:focus {
+            outline: none;
+            border-color: #805ad5;
+            box-shadow: 0 0 0 3px rgba(128, 90, 213, 0.1);
+        }
+
+        .field-list {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 0.5rem;
+        }
+
+        .field-item {
+            display: flex;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
+            align-items: center;
+        }
+
+        .field-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .field-item input {
+            flex: 1;
+            padding: 0.6rem 0.75rem;
+            border: 2px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 0.875rem;
+        }
+
+        .field-item input:focus {
+            outline: none;
+            border-color: #805ad5;
+        }
+
+        .field-item .remove-btn {
+            background: none;
+            border: none;
+            color: #c53030;
+            cursor: pointer;
+            font-size: 1.25rem;
+            padding: 0.25rem;
+        }
+
+        .field-item .remove-btn:hover {
+            color: #e53e3e;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -1044,6 +1238,9 @@
                     <button class="btn btn-sheets" onclick="openSheetsModal()">
                         <span>📊</span> Google Sheets
                     </button>
+                    <button class="btn btn-add-asset" onclick="openAddAssetModal()">
+                        <span>➕</span> Add Asset
+                    </button>
                 </div>
             </div>
         </div>
@@ -1612,6 +1809,11 @@
             </div>
         </div>
 
+        <!-- Custom Assets Section -->
+        <div class="custom-assets-container" id="customAssetsContainer">
+            <!-- Custom assets will be dynamically added here -->
+        </div>
+
         <!-- Notes Section -->
         <div class="card notes-section">
             <div class="card-header">
@@ -1695,9 +1897,55 @@
         </div>
     </div>
 
+    <!-- Add Asset Modal -->
+    <div class="modal-overlay" id="addAssetModal">
+        <div class="modal-content">
+            <div class="modal-header" style="background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);">
+                <h2><span>➕</span> Add New Asset Type</h2>
+                <button class="modal-close" onclick="closeAddAssetModal()">&times;</button>
+            </div>
+            <div class="asset-modal-body">
+                <div class="asset-form-group">
+                    <label class="asset-form-label">Asset Type Name *</label>
+                    <input type="text" class="asset-form-input" id="newAssetName" placeholder="e.g., Electric Vehicle Chargers">
+                </div>
+
+                <div class="asset-form-group">
+                    <label class="asset-form-label">Icon (emoji)</label>
+                    <input type="text" class="asset-form-input" id="newAssetIcon" placeholder="e.g., 🔌" maxlength="2" style="width: 80px;">
+                </div>
+
+                <div class="asset-form-group">
+                    <label class="asset-form-label">Fields (add the data fields you want to track)</label>
+                    <div class="field-list" id="fieldList">
+                        <div class="field-item">
+                            <input type="text" placeholder="Field name (e.g., Total Count)" class="new-field-input">
+                            <button class="remove-btn" onclick="removeFieldInput(this)">&times;</button>
+                        </div>
+                    </div>
+                    <button class="add-field-btn" onclick="addFieldInput()" style="margin-top: 0.75rem;">
+                        <span>➕</span> Add Another Field
+                    </button>
+                </div>
+
+                <div style="display: flex; gap: 0.75rem; margin-top: 1.5rem;">
+                    <button class="sheets-btn sheets-btn-outline" onclick="closeAddAssetModal()" style="flex: 1;">
+                        Cancel
+                    </button>
+                    <button class="sheets-btn" onclick="createCustomAsset()" style="flex: 1; background: linear-gradient(135deg, #805ad5 0%, #6b46c1 100%);">
+                        <span>✓</span> Create Asset
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Chart instances
         let charts = {};
+
+        // Custom Assets Storage
+        let customAssets = [];
 
         // Google Sheets API Configuration
         const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw6VdiS16VYR5jAVCkuRQIMoMd89xikB2NvZ_fcldjuZ-zXT6PkTugdrKuCihjkCNeftw/exec';
@@ -1730,17 +1978,30 @@
             document.querySelectorAll('.form-input, .table-input, .notes-textarea').forEach(input => {
                 data[input.id] = input.value;
             });
+            // Include custom assets
+            data.customAssets = customAssets;
             return data;
         }
 
         // Apply data to form
         function applyFormData(data) {
             Object.keys(data).forEach(key => {
+                if (key === 'customAssets') return; // Handle separately
                 const element = document.getElementById(key);
                 if (element) {
                     element.value = data[key];
                 }
             });
+            // Restore custom assets if present
+            if (data.customAssets && Array.isArray(data.customAssets)) {
+                // Clear existing custom assets from UI
+                document.getElementById('customAssetsContainer').innerHTML = '';
+                customAssets = data.customAssets;
+                customAssets.forEach(asset => {
+                    renderCustomAsset(asset);
+                });
+                saveCustomAssets();
+            }
             // Trigger updates
             updateCalculations();
             updateStaffCalculations();
@@ -1912,9 +2173,229 @@
         // End Google Sheets Integration
         // ==========================================
 
+        // ==========================================
+        // Custom Asset Functions
+        // ==========================================
+
+        // Open Add Asset Modal
+        function openAddAssetModal() {
+            document.getElementById('addAssetModal').classList.add('show');
+            document.getElementById('newAssetName').value = '';
+            document.getElementById('newAssetIcon').value = '';
+            document.getElementById('fieldList').innerHTML = `
+                <div class="field-item">
+                    <input type="text" placeholder="Field name (e.g., Total Count)" class="new-field-input">
+                    <button class="remove-btn" onclick="removeFieldInput(this)">&times;</button>
+                </div>
+            `;
+        }
+
+        // Close Add Asset Modal
+        function closeAddAssetModal() {
+            document.getElementById('addAssetModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const assetModal = document.getElementById('addAssetModal');
+            if (e.target === assetModal) {
+                closeAddAssetModal();
+            }
+        });
+
+        // Add field input row
+        function addFieldInput() {
+            const fieldList = document.getElementById('fieldList');
+            const fieldItem = document.createElement('div');
+            fieldItem.className = 'field-item';
+            fieldItem.innerHTML = `
+                <input type="text" placeholder="Field name" class="new-field-input">
+                <button class="remove-btn" onclick="removeFieldInput(this)">&times;</button>
+            `;
+            fieldList.appendChild(fieldItem);
+        }
+
+        // Remove field input row
+        function removeFieldInput(btn) {
+            const fieldList = document.getElementById('fieldList');
+            if (fieldList.children.length > 1) {
+                btn.parentElement.remove();
+            }
+        }
+
+        // Generate unique ID
+        function generateAssetId() {
+            return 'asset_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Create custom asset
+        function createCustomAsset() {
+            const name = document.getElementById('newAssetName').value.trim();
+            const icon = document.getElementById('newAssetIcon').value.trim() || '📦';
+
+            if (!name) {
+                alert('Please enter an asset type name');
+                return;
+            }
+
+            // Get all field names
+            const fieldInputs = document.querySelectorAll('.new-field-input');
+            const fields = [];
+            fieldInputs.forEach(input => {
+                const fieldName = input.value.trim();
+                if (fieldName) {
+                    fields.push({
+                        id: 'field_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                        name: fieldName,
+                        value: ''
+                    });
+                }
+            });
+
+            if (fields.length === 0) {
+                alert('Please add at least one field');
+                return;
+            }
+
+            // Create asset object
+            const asset = {
+                id: generateAssetId(),
+                name: name,
+                icon: icon,
+                fields: fields,
+                createdAt: new Date().toISOString()
+            };
+
+            // Add to customAssets array
+            customAssets.push(asset);
+
+            // Render the asset
+            renderCustomAsset(asset);
+
+            // Save custom assets
+            saveCustomAssets();
+
+            // Close modal
+            closeAddAssetModal();
+            showToast('Asset type "' + name + '" created!');
+        }
+
+        // Render a custom asset card
+        function renderCustomAsset(asset) {
+            const container = document.getElementById('customAssetsContainer');
+
+            const assetCard = document.createElement('div');
+            assetCard.className = 'custom-asset-card';
+            assetCard.id = asset.id;
+
+            let fieldsHTML = '';
+            asset.fields.forEach(field => {
+                fieldsHTML += `
+                    <div class="form-group">
+                        <label class="form-label">${field.name}</label>
+                        <input type="text" class="form-input custom-asset-input"
+                               id="${field.id}"
+                               data-asset-id="${asset.id}"
+                               value="${field.value || ''}"
+                               onchange="updateCustomAssetField('${asset.id}', '${field.id}', this.value)">
+                    </div>
+                `;
+            });
+
+            assetCard.innerHTML = `
+                <div class="custom-asset-header">
+                    <div class="custom-asset-title">
+                        <span>${asset.icon}</span> ${asset.name}
+                    </div>
+                    <div class="custom-asset-actions">
+                        <button class="custom-asset-btn" onclick="addFieldToAsset('${asset.id}')">+ Add Field</button>
+                        <button class="custom-asset-btn delete" onclick="deleteCustomAsset('${asset.id}')">Delete</button>
+                    </div>
+                </div>
+                <div class="custom-asset-body">
+                    <div class="form-row" id="${asset.id}_fields">
+                        ${fieldsHTML}
+                    </div>
+                </div>
+            `;
+
+            container.appendChild(assetCard);
+        }
+
+        // Update custom asset field value
+        function updateCustomAssetField(assetId, fieldId, value) {
+            const asset = customAssets.find(a => a.id === assetId);
+            if (asset) {
+                const field = asset.fields.find(f => f.id === fieldId);
+                if (field) {
+                    field.value = value;
+                    saveCustomAssets();
+                }
+            }
+        }
+
+        // Add field to existing asset
+        function addFieldToAsset(assetId) {
+            const fieldName = prompt('Enter field name:');
+            if (!fieldName || !fieldName.trim()) return;
+
+            const asset = customAssets.find(a => a.id === assetId);
+            if (asset) {
+                const newField = {
+                    id: 'field_' + Date.now() + '_' + Math.random().toString(36).substr(2, 5),
+                    name: fieldName.trim(),
+                    value: ''
+                };
+                asset.fields.push(newField);
+
+                // Re-render the asset
+                const assetCard = document.getElementById(assetId);
+                if (assetCard) {
+                    assetCard.remove();
+                }
+                renderCustomAsset(asset);
+                saveCustomAssets();
+                showToast('Field added!');
+            }
+        }
+
+        // Delete custom asset
+        function deleteCustomAsset(assetId) {
+            if (!confirm('Delete this asset type? This cannot be undone.')) return;
+
+            customAssets = customAssets.filter(a => a.id !== assetId);
+            const assetCard = document.getElementById(assetId);
+            if (assetCard) {
+                assetCard.remove();
+            }
+            saveCustomAssets();
+            showToast('Asset deleted');
+        }
+
+        // Save custom assets to localStorage
+        function saveCustomAssets() {
+            localStorage.setItem('customAssets', JSON.stringify(customAssets));
+        }
+
+        // Load custom assets from localStorage
+        function loadCustomAssets() {
+            const saved = localStorage.getItem('customAssets');
+            if (saved) {
+                customAssets = JSON.parse(saved);
+                customAssets.forEach(asset => {
+                    renderCustomAsset(asset);
+                });
+            }
+        }
+
+        // ==========================================
+        // End Custom Asset Functions
+        // ==========================================
+
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
+            loadCustomAssets();
             updateCalculations();
             updateStaffCalculations();
             // Try to load from Google Sheets (will use cloud data if newer)
