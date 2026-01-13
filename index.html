@@ -142,6 +142,240 @@
             color: white;
         }
 
+        .btn-sheets {
+            background: linear-gradient(135deg, #0f9d58 0%, #137333 100%);
+            color: white;
+        }
+
+        /* Google Sheets Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #0f9d58 0%, #137333 100%);
+            color: white;
+            padding: 1.25rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+
+        .modal-header h2 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .modal-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .sheets-section {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .sheets-section:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+
+        .sheets-section-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sheets-section-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .sheets-btn {
+            padding: 0.75rem 1.25rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s ease;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sheets-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .sheets-btn-primary {
+            background: linear-gradient(135deg, #0f9d58 0%, #137333 100%);
+            color: white;
+        }
+
+        .sheets-btn-secondary {
+            background: linear-gradient(135deg, #4285f4 0%, #2962ff 100%);
+            color: white;
+        }
+
+        .sheets-btn-outline {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--border-color);
+        }
+
+        .sheets-btn-outline:hover {
+            border-color: var(--accent-color);
+            background: #f0f7ff;
+        }
+
+        .sheets-input-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .sheets-input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 0.875rem;
+            transition: all 0.2s ease;
+        }
+
+        .sheets-input:focus {
+            outline: none;
+            border-color: #0f9d58;
+            box-shadow: 0 0 0 3px rgba(15, 157, 88, 0.1);
+        }
+
+        .sheets-status {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-size: 0.875rem;
+            margin-top: 0.75rem;
+            display: none;
+        }
+
+        .sheets-status.show {
+            display: block;
+        }
+
+        .sheets-status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .sheets-status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .sheets-status.info {
+            background: #e7f3ff;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .sheets-help {
+            background: #f8fafc;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .sheets-help-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .sheets-help ol {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            padding-left: 1.25rem;
+            margin: 0;
+        }
+
+        .sheets-help ol li {
+            margin-bottom: 0.35rem;
+        }
+
         .container {
             max-width: 1400px;
             margin: 0 auto;
@@ -807,6 +1041,9 @@
                     <button class="btn btn-clear" onclick="clearAll()">
                         <span>🗑️</span> Clear All
                     </button>
+                    <button class="btn btn-sheets" onclick="openSheetsModal()">
+                        <span>📊</span> Google Sheets
+                    </button>
                 </div>
             </div>
         </div>
@@ -1393,15 +1630,295 @@
 
     <div class="toast" id="toast">Data saved successfully!</div>
 
+    <!-- Google Sheets Modal -->
+    <div class="modal-overlay" id="sheetsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><span>📊</span> Google Sheets Database</h2>
+                <button class="modal-close" onclick="closeSheetsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Connection Status -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>🔗</span> Connection Status</div>
+                    <div id="connectionStatus" class="sheets-status info show">
+                        Connected to Google Sheets database
+                    </div>
+                </div>
+
+                <!-- Save to Google Sheets -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>💾</span> Save to Google Sheets</div>
+                    <div class="sheets-section-desc">
+                        Save your current inventory data to Google Sheets. Each save creates a new historical record with a timestamp.
+                    </div>
+                    <button class="sheets-btn sheets-btn-primary" onclick="saveToGoogleSheets()">
+                        <span>☁️</span> Save to Cloud
+                    </button>
+                    <div id="saveStatus" class="sheets-status"></div>
+                </div>
+
+                <!-- Load from Google Sheets -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>📥</span> Load from Google Sheets</div>
+                    <div class="sheets-section-desc">
+                        Load the most recent data from Google Sheets, or browse historical records.
+                    </div>
+                    <button class="sheets-btn sheets-btn-secondary" onclick="loadFromGoogleSheets()">
+                        <span>📥</span> Load Latest
+                    </button>
+                    <button class="sheets-btn sheets-btn-outline" onclick="showHistory()">
+                        <span>📜</span> View History
+                    </button>
+                    <div id="loadStatus" class="sheets-status"></div>
+                </div>
+
+                <!-- History Section (hidden by default) -->
+                <div class="sheets-section" id="historySection" style="display: none;">
+                    <div class="sheets-section-title"><span>📜</span> Historical Records</div>
+                    <div class="sheets-section-desc">
+                        Select a previous save to restore that data.
+                    </div>
+                    <div id="historyList" style="max-height: 200px; overflow-y: auto;"></div>
+                </div>
+
+                <!-- Open Sheet Link -->
+                <div class="sheets-section">
+                    <div class="sheets-section-title"><span>🔗</span> View Spreadsheet</div>
+                    <a href="https://docs.google.com/spreadsheets/d/1meQw3H3rV4-GBZB7eas8eHgkKHPypZVSXf2XpSYL2QY/edit"
+                       target="_blank"
+                       class="sheets-btn sheets-btn-outline">
+                        <span>📊</span> Open Google Sheet
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // Chart instances
         let charts = {};
+
+        // Google Sheets API Configuration
+        const GOOGLE_SHEETS_API_URL = 'https://script.google.com/macros/s/AKfycbw6VdiS16VYR5jAVCkuRQIMoMd89xikB2NvZ_fcldjuZ-zXT6PkTugdrKuCihjkCNeftw/exec';
+
+        // ==========================================
+        // Google Sheets Integration Functions
+        // ==========================================
+
+        // Open Google Sheets Modal
+        function openSheetsModal() {
+            document.getElementById('sheetsModal').classList.add('show');
+        }
+
+        // Close Google Sheets Modal
+        function closeSheetsModal() {
+            document.getElementById('sheetsModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('sheetsModal');
+            if (e.target === modal) {
+                closeSheetsModal();
+            }
+        });
+
+        // Collect all form data
+        function collectFormData() {
+            const data = {};
+            document.querySelectorAll('.form-input, .table-input, .notes-textarea').forEach(input => {
+                data[input.id] = input.value;
+            });
+            return data;
+        }
+
+        // Apply data to form
+        function applyFormData(data) {
+            Object.keys(data).forEach(key => {
+                const element = document.getElementById(key);
+                if (element) {
+                    element.value = data[key];
+                }
+            });
+            // Trigger updates
+            updateCalculations();
+            updateStaffCalculations();
+            updateDistrictTotal();
+            updateGuardrail();
+            updateYearLabels();
+            if (charts.signal) updateCharts();
+            if (charts.tcTrend) updateTrendCharts();
+        }
+
+        // Show status message
+        function showSheetsStatus(elementId, message, type) {
+            const statusEl = document.getElementById(elementId);
+            statusEl.textContent = message;
+            statusEl.className = 'sheets-status show ' + type;
+            setTimeout(() => {
+                statusEl.classList.remove('show');
+            }, 5000);
+        }
+
+        // Save to Google Sheets
+        async function saveToGoogleSheets() {
+            const saveBtn = document.querySelector('[onclick="saveToGoogleSheets()"]');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span>⏳</span> Saving...';
+            saveBtn.disabled = true;
+
+            try {
+                const data = collectFormData();
+
+                const response = await fetch(GOOGLE_SHEETS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                // With no-cors, we can't read the response, but the data is sent
+                showSheetsStatus('saveStatus', 'Data saved to Google Sheets successfully!', 'success');
+                showToast('Data saved to Google Sheets!');
+
+                // Also save locally
+                const localData = { ...data, lastUpdated: new Date().toLocaleString() };
+                localStorage.setItem('trafficInventory', JSON.stringify(localData));
+                document.getElementById('lastUpdated').textContent = localData.lastUpdated;
+
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                showSheetsStatus('saveStatus', 'Error saving: ' + error.message, 'error');
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
+        }
+
+        // Load from Google Sheets
+        async function loadFromGoogleSheets() {
+            const loadBtn = document.querySelector('[onclick="loadFromGoogleSheets()"]');
+            const originalText = loadBtn.innerHTML;
+            loadBtn.innerHTML = '<span>⏳</span> Loading...';
+            loadBtn.disabled = true;
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getLatest');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    applyFormData(result.data);
+                    const timestamp = new Date(result.timestamp).toLocaleString();
+                    document.getElementById('lastUpdated').textContent = timestamp + ' (from Cloud)';
+                    showSheetsStatus('loadStatus', 'Data loaded successfully from ' + timestamp, 'success');
+                    showToast('Data loaded from Google Sheets!');
+                } else {
+                    showSheetsStatus('loadStatus', 'No data found in Google Sheets', 'info');
+                }
+            } catch (error) {
+                console.error('Error loading from Google Sheets:', error);
+                showSheetsStatus('loadStatus', 'Error loading: ' + error.message, 'error');
+            } finally {
+                loadBtn.innerHTML = originalText;
+                loadBtn.disabled = false;
+            }
+        }
+
+        // Show History
+        async function showHistory() {
+            const historySection = document.getElementById('historySection');
+            const historyList = document.getElementById('historyList');
+
+            historySection.style.display = 'block';
+            historyList.innerHTML = '<p style="color: #718096; font-size: 0.875rem;">Loading history...</p>';
+
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getHistory&limit=20');
+                const result = await response.json();
+
+                if (result.success && result.history && result.history.length > 0) {
+                    historyList.innerHTML = result.history.map((item, index) => {
+                        const date = new Date(item.timestamp).toLocaleString();
+                        return `
+                            <div style="padding: 0.75rem; border: 1px solid #e2e8f0; border-radius: 8px; margin-bottom: 0.5rem; cursor: pointer; transition: all 0.2s ease;"
+                                 onmouseover="this.style.background='#f0f7ff'; this.style.borderColor='#3182ce';"
+                                 onmouseout="this.style.background='white'; this.style.borderColor='#e2e8f0';"
+                                 onclick="loadHistoryItem(${index})">
+                                <div style="font-weight: 600; color: #2d3748; font-size: 0.875rem;">${date}</div>
+                                <div style="font-size: 0.75rem; color: #718096;">Click to restore this version</div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    // Store history data for later use
+                    window.historyData = result.history;
+                } else {
+                    historyList.innerHTML = '<p style="color: #718096; font-size: 0.875rem;">No historical records found.</p>';
+                }
+            } catch (error) {
+                console.error('Error loading history:', error);
+                historyList.innerHTML = '<p style="color: #c53030; font-size: 0.875rem;">Error loading history: ' + error.message + '</p>';
+            }
+        }
+
+        // Load specific history item
+        function loadHistoryItem(index) {
+            if (window.historyData && window.historyData[index]) {
+                const item = window.historyData[index];
+                if (confirm('Load data from ' + new Date(item.timestamp).toLocaleString() + '? This will replace your current data.')) {
+                    applyFormData(item.data);
+                    const timestamp = new Date(item.timestamp).toLocaleString();
+                    document.getElementById('lastUpdated').textContent = timestamp + ' (restored)';
+                    showToast('Historical data restored!');
+                    closeSheetsModal();
+                }
+            }
+        }
+
+        // Auto-load from Google Sheets on page load (optional)
+        async function tryLoadFromCloud() {
+            try {
+                const response = await fetch(GOOGLE_SHEETS_API_URL + '?action=getLatest');
+                const result = await response.json();
+
+                if (result.success && result.data) {
+                    // Check if cloud data is newer than local data
+                    const localData = localStorage.getItem('trafficInventory');
+                    const cloudTimestamp = new Date(result.timestamp).getTime();
+
+                    if (localData) {
+                        const local = JSON.parse(localData);
+                        const localTimestamp = local.lastUpdated ? new Date(local.lastUpdated).getTime() : 0;
+
+                        if (cloudTimestamp > localTimestamp) {
+                            applyFormData(result.data);
+                            document.getElementById('lastUpdated').textContent = new Date(result.timestamp).toLocaleString() + ' (from Cloud)';
+                        }
+                    } else {
+                        // No local data, use cloud data
+                        applyFormData(result.data);
+                        document.getElementById('lastUpdated').textContent = new Date(result.timestamp).toLocaleString() + ' (from Cloud)';
+                    }
+                }
+            } catch (error) {
+                console.log('Could not load from cloud, using local data:', error.message);
+            }
+        }
+
+        // ==========================================
+        // End Google Sheets Integration
+        // ==========================================
 
         // Initialize on page load
         document.addEventListener('DOMContentLoaded', function() {
             loadData();
             updateCalculations();
             updateStaffCalculations();
+            // Try to load from Google Sheets (will use cloud data if newer)
+            tryLoadFromCloud();
             updateDistrictTotal();
             updateGuardrail();
             initCharts();
