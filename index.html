@@ -1936,16 +1936,39 @@
             }, 300);
         }
 
-        // Save Data
-        function saveData() {
-            const data = {};
-            document.querySelectorAll('.form-input, .table-input, .notes-textarea').forEach(input => {
-                data[input.id] = input.value;
-            });
-            data.lastUpdated = new Date().toLocaleString();
-            localStorage.setItem('trafficInventory', JSON.stringify(data));
-            document.getElementById('lastUpdated').textContent = data.lastUpdated;
-            showToast('Data saved successfully!');
+        // Save Data (saves to both localStorage and Google Sheets)
+        async function saveData() {
+            const saveBtn = document.querySelector('.btn-save');
+            const originalText = saveBtn.innerHTML;
+            saveBtn.innerHTML = '<span>⏳</span> Saving...';
+            saveBtn.disabled = true;
+
+            try {
+                const data = collectFormData();
+                data.lastUpdated = new Date().toLocaleString();
+
+                // Save to localStorage
+                localStorage.setItem('trafficInventory', JSON.stringify(data));
+                document.getElementById('lastUpdated').textContent = data.lastUpdated;
+
+                // Save to Google Sheets
+                await fetch(GOOGLE_SHEETS_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                showToast('Data saved to local storage and Google Sheets!');
+            } catch (error) {
+                console.error('Error saving to Google Sheets:', error);
+                showToast('Data saved locally. Cloud sync failed: ' + error.message);
+            } finally {
+                saveBtn.innerHTML = originalText;
+                saveBtn.disabled = false;
+            }
         }
 
         // Load Data
