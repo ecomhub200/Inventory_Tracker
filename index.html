@@ -1632,18 +1632,10 @@
                 <span class="card-header-icon">📊</span> Infrastructure Overview Dashboard
             </div>
             <div class="card-body">
-                <div class="chart-row" style="margin: 0;">
-                    <div class="chart-card" style="flex: 1.2;">
-                        <div class="chart-card-title"><span>🎯</span> Total Infrastructure Distribution</div>
-                        <div class="chart-container" style="height: 300px;">
-                            <canvas id="infrastructureOverviewChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="chart-card" style="flex: 1;">
-                        <div class="chart-card-title"><span>📈</span> Year-over-Year Growth Comparison</div>
-                        <div class="chart-container" style="height: 300px;">
-                            <canvas id="growthComparisonChart"></canvas>
-                        </div>
+                <div class="chart-card" style="margin: 0;">
+                    <div class="chart-card-title"><span>🎯</span> Total Infrastructure Distribution</div>
+                    <div class="chart-container" style="height: 350px;">
+                        <canvas id="infrastructureOverviewChart"></canvas>
                     </div>
                 </div>
             </div>
@@ -2878,76 +2870,6 @@
                 }
             });
 
-            // Growth Comparison Chart (Multi-line)
-            const growthCtx = document.getElementById('growthComparisonChart').getContext('2d');
-            charts.growth = new Chart(growthCtx, {
-                type: 'line',
-                data: {
-                    labels: [
-                        document.getElementById('reportYear1').value,
-                        document.getElementById('reportYear2').value,
-                        document.getElementById('reportYear3').value
-                    ],
-                    datasets: [
-                        {
-                            label: 'Signals',
-                            data: [
-                                parseInt(document.getElementById('signal2023').value) || 0,
-                                parseInt(document.getElementById('signal2024').value) || 0,
-                                parseInt(document.getElementById('signal2025').value) || 0
-                            ],
-                            borderColor: '#3182ce',
-                            backgroundColor: 'rgba(49, 130, 206, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Ped Facilities',
-                            data: [
-                                parseInt(document.getElementById('ped2023').value) || 0,
-                                parseInt(document.getElementById('ped2024').value) || 0,
-                                parseInt(document.getElementById('ped2025').value) || 0
-                            ],
-                            borderColor: '#d69e2e',
-                            backgroundColor: 'rgba(214, 158, 46, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 4
-                        },
-                        {
-                            label: 'Bike Miles',
-                            data: [
-                                parseFloat(document.getElementById('bike2023').value) || 0,
-                                parseFloat(document.getElementById('bike2024').value) || 0,
-                                parseFloat(document.getElementById('bike2025').value) || 0
-                            ],
-                            borderColor: '#319795',
-                            backgroundColor: 'rgba(49, 151, 149, 0.1)',
-                            borderWidth: 2,
-                            tension: 0.3,
-                            pointRadius: 4
-                        }
-                    ]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'top', labels: { font: { size: 10 } } },
-                        title: {
-                            display: true,
-                            text: 'Multi-Year Growth Trends',
-                            font: { size: 14, weight: 'bold' }
-                        }
-                    },
-                    scales: {
-                        y: { beginAtZero: false, title: { display: true, text: 'Count/Miles' } },
-                        x: { title: { display: true, text: 'Year' } }
-                    }
-                }
-            });
-
             // Traffic Calming Trend Chart
             const year1 = document.getElementById('reportYear1').value;
             const year2 = document.getElementById('reportYear2').value;
@@ -3213,25 +3135,6 @@
                 charts.infraOverview.update();
             }
 
-            // Update Growth Comparison Chart
-            if (charts.growth) {
-                charts.growth.data.datasets[0].data = [
-                    parseInt(document.getElementById('signal2023').value) || 0,
-                    parseInt(document.getElementById('signal2024').value) || 0,
-                    parseInt(document.getElementById('signal2025').value) || 0
-                ];
-                charts.growth.data.datasets[1].data = [
-                    parseInt(document.getElementById('ped2023').value) || 0,
-                    parseInt(document.getElementById('ped2024').value) || 0,
-                    parseInt(document.getElementById('ped2025').value) || 0
-                ];
-                charts.growth.data.datasets[2].data = [
-                    parseFloat(document.getElementById('bike2023').value) || 0,
-                    parseFloat(document.getElementById('bike2024').value) || 0,
-                    parseFloat(document.getElementById('bike2025').value) || 0
-                ];
-                charts.growth.update();
-            }
         }
 
         // Update Trend Charts
