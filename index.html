@@ -2727,156 +2727,131 @@
 
         // Initialize Charts
         function initCharts() {
-            const signalCtx = document.getElementById('signalChart').getContext('2d');
-            charts.signal = new Chart(signalCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Mast Arm', 'Span Wire', 'FYA Signals'],
-                    datasets: [{
-                        data: [
-                            parseInt(document.getElementById('mastArm').value) || 0,
-                            parseInt(document.getElementById('spanWire').value) || 0,
-                            parseInt(document.getElementById('fya').value) || 0
-                        ],
-                        backgroundColor: ['#3182ce', '#38a169', '#d69e2e'],
-                        borderWidth: 3,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { position: 'bottom' }
-                    }
-                }
-            });
+            // Helper to safely get element value
+            const getVal = (id) => {
+                const el = document.getElementById(id);
+                return el ? (parseInt(el.value) || 0) : 0;
+            };
+            const getText = (id) => {
+                const el = document.getElementById(id);
+                return el ? (parseInt(el.textContent) || 0) : 0;
+            };
 
-            const detectionCtx = document.getElementById('detectionChart').getContext('2d');
-            charts.detection = new Chart(detectionCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Loop Detection', 'Video Detection', 'Loop Phase'],
-                    datasets: [{
-                        label: 'Intersections',
-                        data: [
-                            parseInt(document.getElementById('loopDetection').value) || 0,
-                            parseInt(document.getElementById('videoDetection').value) || 0,
-                            parseInt(document.getElementById('loopPhase').value) || 0
-                        ],
-                        backgroundColor: ['#3182ce', '#38a169', '#805ad5'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            const districtCtx = document.getElementById('districtChart').getContext('2d');
-            charts.district = new Chart(districtCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Brookland', 'Fairfield', 'Three Chopt', 'Tuckahoe', 'Varina'],
-                    datasets: [{
-                        label: 'Streets',
-                        data: [
-                            parseInt(document.getElementById('brookland').value) || 0,
-                            parseInt(document.getElementById('fairfield').value) || 0,
-                            parseInt(document.getElementById('threeChopt').value) || 0,
-                            parseInt(document.getElementById('tuckahoe').value) || 0,
-                            parseInt(document.getElementById('varina').value) || 0
-                        ],
-                        backgroundColor: '#3182ce',
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    indexAxis: 'y',
-                    plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true } }
-                }
-            });
-
-            const staffCtx = document.getElementById('staffChart').getContext('2d');
-            charts.staff = new Chart(staffCtx, {
-                type: 'bar',
-                data: {
-                    labels: ['Eng Study', 'Eng', 'Signal', 'Signal Draw', 'Sign', 'Marking', 'Sign & Mark'],
-                    datasets: [{
-                        label: 'Staff',
-                        data: [
-                            parseInt(document.getElementById('engStudyTotal').textContent) || 0,
-                            parseInt(document.getElementById('engTotal').textContent) || 0,
-                            parseInt(document.getElementById('signalTotal').textContent) || 0,
-                            parseInt(document.getElementById('signalDrawTotal').textContent) || 0,
-                            parseInt(document.getElementById('signTotal').textContent) || 0,
-                            parseInt(document.getElementById('markingTotal').textContent) || 0,
-                            parseInt(document.getElementById('signMarkingTotal').textContent) || 0
-                        ],
-                        backgroundColor: ['#3182ce', '#4299e1', '#38a169', '#805ad5', '#d69e2e', '#e53e3e', '#319795'],
-                        borderRadius: 8
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true } }
-                }
-            });
-
-            // Infrastructure Overview Chart (Doughnut)
-            const infraCtx = document.getElementById('infrastructureOverviewChart').getContext('2d');
-            charts.infraOverview = new Chart(infraCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['Signal Locations', 'Detection Systems', 'Ped Facilities', 'Luminaires', 'Speed Cushions', 'Bike Lane Miles', 'Guardrail'],
-                    datasets: [{
-                        data: [
-                            parseInt(document.getElementById('totalSignals').textContent) || 0,
-                            parseInt(document.getElementById('totalDetection').textContent) || 0,
-                            parseInt(document.getElementById('totalPed').textContent) || 0,
-                            parseInt(document.getElementById('totalLuminaires').textContent) || 0,
-                            parseInt(document.getElementById('totalSpeedCushions').textContent) || 0,
-                            parseFloat(document.getElementById('totalBikeLanes').textContent) * 10 || 0,
-                            parseInt(document.getElementById('totalGuardrail').textContent) || 0
-                        ],
-                        backgroundColor: ['#3182ce', '#38a169', '#d69e2e', '#805ad5', '#e53e3e', '#319795', '#718096'],
-                        borderWidth: 3,
-                        borderColor: '#fff'
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    cutout: '50%',
-                    plugins: {
-                        legend: {
-                            position: 'right',
-                            labels: { font: { size: 11 }, padding: 15 }
+            try {
+                // Signal Infrastructure Distribution
+                const signalEl = document.getElementById('signalChart');
+                if (signalEl) {
+                    charts.signal = new Chart(signalEl.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Mast Arm', 'Span Wire', 'FYA Signals'],
+                            datasets: [{
+                                data: [getVal('mastArm'), getVal('spanWire'), getVal('fya')],
+                                backgroundColor: ['#3182ce', '#38a169', '#d69e2e'],
+                                borderWidth: 3,
+                                borderColor: '#fff'
+                            }]
                         },
-                        title: {
-                            display: true,
-                            text: 'Infrastructure Asset Distribution',
-                            font: { size: 14, weight: 'bold' }
-                        }
-                    }
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+                    });
                 }
-            });
 
-            // Traffic Calming Trend Chart
-            const year1 = document.getElementById('reportYear1').value;
-            const year2 = document.getElementById('reportYear2').value;
-            const year3 = document.getElementById('reportYear3').value;
-            
-            const tcTrendCtx = document.getElementById('tcTrendChart').getContext('2d');
-            charts.tcTrend = new Chart(tcTrendCtx, {
+                // Detection Systems Overview
+                const detectionEl = document.getElementById('detectionChart');
+                if (detectionEl) {
+                    charts.detection = new Chart(detectionEl.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Loop Detection', 'Video Detection', 'Loop Phase'],
+                            datasets: [{
+                                label: 'Intersections',
+                                data: [getVal('loopDetection'), getVal('videoDetection'), getVal('loopPhase')],
+                                backgroundColor: ['#3182ce', '#38a169', '#805ad5'],
+                                borderRadius: 8
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                    });
+                }
+
+                // Traffic Calming by District
+                const districtEl = document.getElementById('districtChart');
+                if (districtEl) {
+                    charts.district = new Chart(districtEl.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Brookland', 'Fairfield', 'Three Chopt', 'Tuckahoe', 'Varina'],
+                            datasets: [{
+                                label: 'Streets',
+                                data: [getVal('brookland'), getVal('fairfield'), getVal('threeChopt'), getVal('tuckahoe'), getVal('varina')],
+                                backgroundColor: '#3182ce',
+                                borderRadius: 8
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+                    });
+                }
+
+                // Staff Distribution
+                const staffEl = document.getElementById('staffChart');
+                if (staffEl) {
+                    charts.staff = new Chart(staffEl.getContext('2d'), {
+                        type: 'bar',
+                        data: {
+                            labels: ['Eng Study', 'Eng', 'Signal', 'Signal Draw', 'Sign', 'Marking', 'Sign & Mark'],
+                            datasets: [{
+                                label: 'Staff',
+                                data: [getText('engStudyTotal'), getText('engTotal'), getText('signalTotal'), getText('signalDrawTotal'), getText('signTotal'), getText('markingTotal'), getText('signMarkingTotal')],
+                                backgroundColor: ['#3182ce', '#4299e1', '#38a169', '#805ad5', '#d69e2e', '#e53e3e', '#319795'],
+                                borderRadius: 8
+                            }]
+                        },
+                        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                    });
+                }
+
+                // Infrastructure Overview Chart (Doughnut)
+                const infraEl = document.getElementById('infrastructureOverviewChart');
+                if (infraEl) {
+                    charts.infraOverview = new Chart(infraEl.getContext('2d'), {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Signal Locations', 'Detection Systems', 'Ped Facilities', 'Luminaires', 'Speed Cushions', 'Bike Lane Miles', 'Guardrail'],
+                            datasets: [{
+                                data: [
+                                    getText('totalSignals'),
+                                    getText('totalDetection'),
+                                    getText('totalPed'),
+                                    getText('totalLuminaires'),
+                                    getText('totalSpeedCushions'),
+                                    parseFloat(document.getElementById('totalBikeLanes')?.textContent || 0) * 10,
+                                    getText('totalGuardrail')
+                                ],
+                                backgroundColor: ['#3182ce', '#38a169', '#d69e2e', '#805ad5', '#e53e3e', '#319795', '#718096'],
+                                borderWidth: 3,
+                                borderColor: '#fff'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: '50%',
+                            plugins: {
+                                legend: { position: 'right', labels: { font: { size: 11 }, padding: 15 } },
+                                title: { display: true, text: 'Infrastructure Asset Distribution', font: { size: 14, weight: 'bold' } }
+                            }
+                        }
+                    });
+                }
+
+                // Traffic Calming Trend Chart
+                const year1 = document.getElementById('reportYear1')?.value || '2023';
+                const year2 = document.getElementById('reportYear2')?.value || '2024';
+                const year3 = document.getElementById('reportYear3')?.value || '2025';
+
+                const tcTrendEl = document.getElementById('tcTrendChart');
+                if (tcTrendEl) {
+                charts.tcTrend = new Chart(tcTrendEl.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: [year1, year2, year3],
@@ -2914,11 +2889,13 @@
                         }
                     }
                 }
-            });
+                });
+                }
 
-            // Plan Review Trend Chart
-            const prTrendCtx = document.getElementById('prTrendChart').getContext('2d');
-            charts.prTrend = new Chart(prTrendCtx, {
+                // Plan Review Trend Chart
+                const prTrendEl = document.getElementById('prTrendChart');
+                if (prTrendEl) {
+                charts.prTrend = new Chart(prTrendEl.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: [year1, year2, year3],
@@ -2956,11 +2933,13 @@
                         }
                     }
                 }
-            });
+                });
+                }
 
-            // Signal Infrastructure Trend Chart
-            const signalTrendCtx = document.getElementById('signalTrendChart').getContext('2d');
-            charts.signalTrend = new Chart(signalTrendCtx, {
+                // Signal Infrastructure Trend Chart
+                const signalTrendEl = document.getElementById('signalTrendChart');
+                if (signalTrendEl) {
+                charts.signalTrend = new Chart(signalTrendEl.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: [year1, year2, year3],
@@ -3000,9 +2979,12 @@
                 }
             });
 
-            // Pedestrian Facilities Trend Chart
-            const pedTrendCtx = document.getElementById('pedTrendChart').getContext('2d');
-            charts.pedTrend = new Chart(pedTrendCtx, {
+                }
+
+                // Pedestrian Facilities Trend Chart
+                const pedTrendEl = document.getElementById('pedTrendChart');
+                if (pedTrendEl) {
+                charts.pedTrend = new Chart(pedTrendEl.getContext('2d'), {
                 type: 'line',
                 data: {
                     labels: [year1, year2, year3],
@@ -3040,86 +3022,94 @@
                         }
                     }
                 }
-            });
-
-            // Bike Lane Trend Chart
-            const bikeTrendCtx = document.getElementById('bikeTrendChart').getContext('2d');
-            charts.bikeTrend = new Chart(bikeTrendCtx, {
-                type: 'line',
-                data: {
-                    labels: [year1, year2, year3],
-                    datasets: [{
-                        label: 'Bike Lane Miles',
-                        data: [
-                            parseFloat(document.getElementById('bike2023').value) || 0,
-                            parseFloat(document.getElementById('bike2024').value) || 0,
-                            parseFloat(document.getElementById('bike2025').value) || 0
-                        ],
-                        borderColor: '#319795',
-                        backgroundColor: 'rgba(49, 151, 149, 0.1)',
-                        borderWidth: 3,
-                        fill: true,
-                        tension: 0.3,
-                        pointBackgroundColor: '#319795',
-                        pointBorderColor: '#fff',
-                        pointBorderWidth: 2,
-                        pointRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: {
-                        legend: { display: true, position: 'top' }
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: false,
-                            title: { display: true, text: 'Miles' }
-                        },
-                        x: {
-                            title: { display: true, text: 'Year' }
-                        }
-                    }
+                });
                 }
-            });
+
+                // Bike Lane Trend Chart
+                const bikeTrendEl = document.getElementById('bikeTrendChart');
+                if (bikeTrendEl) {
+                    charts.bikeTrend = new Chart(bikeTrendEl.getContext('2d'), {
+                        type: 'line',
+                        data: {
+                            labels: [year1, year2, year3],
+                            datasets: [{
+                                label: 'Bike Lane Miles',
+                                data: [
+                                    parseFloat(document.getElementById('bike2023')?.value) || 0,
+                                    parseFloat(document.getElementById('bike2024')?.value) || 0,
+                                    parseFloat(document.getElementById('bike2025')?.value) || 0
+                                ],
+                                borderColor: '#319795',
+                                backgroundColor: 'rgba(49, 151, 149, 0.1)',
+                                borderWidth: 3,
+                                fill: true,
+                                tension: 0.3,
+                                pointBackgroundColor: '#319795',
+                                pointBorderColor: '#fff',
+                                pointBorderWidth: 2,
+                                pointRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: { legend: { display: true, position: 'top' } },
+                            scales: {
+                                y: { beginAtZero: false, title: { display: true, text: 'Miles' } },
+                                x: { title: { display: true, text: 'Year' } }
+                            }
+                        }
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error initializing charts:', error);
+            }
         }
 
         // Update Charts
         function updateCharts() {
-            charts.signal.data.datasets[0].data = [
-                parseInt(document.getElementById('mastArm').value) || 0,
-                parseInt(document.getElementById('spanWire').value) || 0,
-                parseInt(document.getElementById('fya').value) || 0
-            ];
-            charts.signal.update();
+            if (charts.signal) {
+                charts.signal.data.datasets[0].data = [
+                    parseInt(document.getElementById('mastArm')?.value) || 0,
+                    parseInt(document.getElementById('spanWire')?.value) || 0,
+                    parseInt(document.getElementById('fya')?.value) || 0
+                ];
+                charts.signal.update();
+            }
 
-            charts.detection.data.datasets[0].data = [
-                parseInt(document.getElementById('loopDetection').value) || 0,
-                parseInt(document.getElementById('videoDetection').value) || 0,
-                parseInt(document.getElementById('loopPhase').value) || 0
-            ];
-            charts.detection.update();
+            if (charts.detection) {
+                charts.detection.data.datasets[0].data = [
+                    parseInt(document.getElementById('loopDetection')?.value) || 0,
+                    parseInt(document.getElementById('videoDetection')?.value) || 0,
+                    parseInt(document.getElementById('loopPhase')?.value) || 0
+                ];
+                charts.detection.update();
+            }
 
-            charts.district.data.datasets[0].data = [
-                parseInt(document.getElementById('brookland').value) || 0,
-                parseInt(document.getElementById('fairfield').value) || 0,
-                parseInt(document.getElementById('threeChopt').value) || 0,
-                parseInt(document.getElementById('tuckahoe').value) || 0,
-                parseInt(document.getElementById('varina').value) || 0
-            ];
-            charts.district.update();
+            if (charts.district) {
+                charts.district.data.datasets[0].data = [
+                    parseInt(document.getElementById('brookland')?.value) || 0,
+                    parseInt(document.getElementById('fairfield')?.value) || 0,
+                    parseInt(document.getElementById('threeChopt')?.value) || 0,
+                    parseInt(document.getElementById('tuckahoe')?.value) || 0,
+                    parseInt(document.getElementById('varina')?.value) || 0
+                ];
+                charts.district.update();
+            }
 
-            charts.staff.data.datasets[0].data = [
-                parseInt(document.getElementById('engStudyTotal').textContent) || 0,
-                parseInt(document.getElementById('engTotal').textContent) || 0,
-                parseInt(document.getElementById('signalTotal').textContent) || 0,
-                parseInt(document.getElementById('signalDrawTotal').textContent) || 0,
-                parseInt(document.getElementById('signTotal').textContent) || 0,
-                parseInt(document.getElementById('markingTotal').textContent) || 0,
-                parseInt(document.getElementById('signMarkingTotal').textContent) || 0
-            ];
-            charts.staff.update();
+            if (charts.staff) {
+                charts.staff.data.datasets[0].data = [
+                    parseInt(document.getElementById('engStudyTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('engTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('signalTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('signalDrawTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('signTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('markingTotal')?.textContent) || 0,
+                    parseInt(document.getElementById('signMarkingTotal')?.textContent) || 0
+                ];
+                charts.staff.update();
+            }
 
             // Update Infrastructure Overview Chart
             if (charts.infraOverview) {
