@@ -1730,9 +1730,10 @@
                     View and restore previous saves from Google Sheets. Click any entry to load that data.
                 </p>
                 <div id="mainHistoryList" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem;">
-                    <div style="padding: 1rem; text-align: center; color: #718096;">
-                        <span style="font-size: 2rem;">⏳</span>
-                        <p style="margin-top: 0.5rem;">Loading history from Google Sheets...</p>
+                    <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #718096; background: #f7fafc; border-radius: 8px;">
+                        <span style="font-size: 2.5rem;">📊</span>
+                        <p style="margin-top: 0.75rem; font-weight: 600;">Save data to see history</p>
+                        <p style="font-size: 0.85rem;">Click Save to store your data in Google Sheets</p>
                     </div>
                 </div>
             </div>
@@ -2977,8 +2978,7 @@
                         }
                     }
                 }
-            });
-
+                });
                 }
 
                 // Pedestrian Facilities Trend Chart
