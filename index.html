@@ -2227,6 +2227,10 @@
             pptBtn.innerHTML = '<span>⏳</span> Generating...';
             pptBtn.disabled = true;
 
+            // Helper function to safely get element value
+            const getVal = (id) => document.getElementById(id)?.value || '0';
+            const getText = (id) => document.getElementById(id)?.textContent || '0';
+
             try {
                 const pptx = new PptxGenJS();
 
@@ -2263,13 +2267,13 @@
 
                 // Summary data boxes
                 const summaryData = [
-                    { label: 'Signal Locations', value: document.getElementById('totalSignals').textContent, color: '3182ce' },
-                    { label: 'Detection Systems', value: document.getElementById('totalDetection').textContent, color: '38a169' },
-                    { label: 'Ped Facilities', value: document.getElementById('totalPed').textContent, color: 'd69e2e' },
-                    { label: 'Luminaires', value: document.getElementById('totalLuminaires').textContent, color: '805ad5' },
-                    { label: 'Speed Cushions', value: document.getElementById('totalSpeedCushions').textContent, color: 'e53e3e' },
-                    { label: 'Bike Lane Miles', value: document.getElementById('totalBikeLanes').textContent, color: '319795' },
-                    { label: 'Guardrail', value: document.getElementById('totalGuardrail').textContent, color: '718096' }
+                    { label: 'Signal Locations', value: getText('totalSignals'), color: '3182ce' },
+                    { label: 'Detection Systems', value: getText('totalDetection'), color: '38a169' },
+                    { label: 'Ped Facilities', value: getText('totalPed'), color: 'd69e2e' },
+                    { label: 'Luminaires', value: getText('totalLuminaires'), color: '805ad5' },
+                    { label: 'Speed Cushions', value: getText('totalSpeedCushions'), color: 'e53e3e' },
+                    { label: 'Bike Lane Miles', value: getText('totalBikeLanes'), color: '319795' },
+                    { label: 'Guardrail', value: getText('totalGuardrail'), color: '718096' }
                 ];
 
                 let xPos = 0.3;
@@ -2289,11 +2293,11 @@
 
                 const signalData = [
                     ['Component', 'Count'],
-                    ['Mast Arm Intersections', document.getElementById('mastArm').value],
-                    ['Span Wire Intersections', document.getElementById('spanWire').value],
-                    ['FYA (Flashing Yellow Arrow)', document.getElementById('fya').value],
-                    ['Battery Backup', document.getElementById('batteryBackup').value],
-                    ['Total Signals', document.getElementById('totalSignals').textContent]
+                    ['Mast Arm Intersections', getVal('mastArm')],
+                    ['Span Wire Intersections', getVal('spanWire')],
+                    ['FYA (Flashing Yellow Arrow)', getVal('fya')],
+                    ['Battery Backup', getVal('batteryBackup')],
+                    ['Total Signals', getText('totalSignals')]
                 ];
 
                 slide3.addTable(signalData, {
@@ -2310,9 +2314,9 @@
                 // Year-by-year trend
                 slide3.addText('Year-by-Year Trend', { x: 6, y: 1.2, w: 3.5, h: 0.4, fontSize: 14, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const signalTrend = [
-                    [year1, document.getElementById('signal2023').value],
-                    [year2, document.getElementById('signal2024').value],
-                    [year3, document.getElementById('signal2025').value]
+                    [year1, getVal('signal2023')],
+                    [year2, getVal('signal2024')],
+                    [year3, getVal('signal2025')]
                 ];
                 slide3.addChart(pptx.ChartType.bar, [{ name: 'Signals', labels: signalTrend.map(r => r[0]), values: signalTrend.map(r => parseInt(r[1])) }], {
                     x: 6, y: 1.6, w: 3.5, h: 2.5,
@@ -2330,11 +2334,11 @@
                 slide4.addText('Detection Systems', { x: 0.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const detectionData = [
                     ['Type', 'Count'],
-                    ['Loop Detection', document.getElementById('loopDetection').value],
-                    ['Video Detection', document.getElementById('videoDetection').value],
-                    ['Loop Phase', document.getElementById('loopPhase').value],
-                    ['CCTV Locations', document.getElementById('cctvLocations').value],
-                    ['Total', document.getElementById('totalDetection').textContent]
+                    ['Loop Detection', getVal('loopDetection')],
+                    ['Video Detection', getVal('videoDetection')],
+                    ['Loop Phase', getVal('loopPhase')],
+                    ['CCTV Locations', getVal('cctvLocations')],
+                    ['Total', getText('totalDetection')]
                 ];
                 slide4.addTable(detectionData, { x: 0.5, y: 1.6, w: 4, h: 2, colW: [2.5, 1.5], fill: { color: 'f0fff4' }, border: { pt: 0.5, color: '9ae6b4' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
 
@@ -2342,17 +2346,17 @@
                 slide4.addText('Pedestrian Facilities', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const pedData = [
                     ['Type', 'Count'],
-                    ['Pedestrian Flashers', document.getElementById('pedFlashers').value],
-                    ['HAWK Signals', document.getElementById('hawkSignals').value],
-                    ['Total', document.getElementById('totalPed').textContent]
+                    ['Pedestrian Flashers', getVal('pedFlashers')],
+                    ['HAWK Signals', getVal('hawkSignals')],
+                    ['Total', getText('totalPed')]
                 ];
                 slide4.addTable(pedData, { x: 5.5, y: 1.6, w: 4, h: 1.5, colW: [2.5, 1.5], fill: { color: 'fffff0' }, border: { pt: 0.5, color: 'f6e05e' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
 
                 // Ped trend chart
                 const pedTrend = [
-                    [year1, document.getElementById('ped2023').value],
-                    [year2, document.getElementById('ped2024').value],
-                    [year3, document.getElementById('ped2025').value]
+                    [year1, getVal('ped2023')],
+                    [year2, getVal('ped2024')],
+                    [year3, getVal('ped2025')]
                 ];
                 slide4.addChart(pptx.ChartType.line, [{ name: 'Ped Facilities', labels: pedTrend.map(r => r[0]), values: pedTrend.map(r => parseInt(r[1])) }], {
                     x: 5.5, y: 3.2, w: 4, h: 2,
@@ -2366,9 +2370,10 @@
                 slide5.addText('Traffic Calming Program', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
                 slide5.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: 'e53e3e' } });
 
-                // By District data
+                // By District data - use correct element IDs
+                const districtIds = ['brookland', 'fairfield', 'threeChopt', 'tuckahoe', 'varina'];
                 const districts = ['Brookland', 'Fairfield', 'Three Chopt', 'Tuckahoe', 'Varina'];
-                const districtValues = districts.map(d => parseInt(document.getElementById('tc' + d.replace(' ', '')).value) || 0);
+                const districtValues = districtIds.map(id => parseInt(document.getElementById(id)?.value) || 0);
 
                 slide5.addChart(pptx.ChartType.pie, [{ name: 'By District', labels: districts, values: districtValues }], {
                     x: 0.5, y: 1.2, w: 4.5, h: 3,
@@ -2380,9 +2385,9 @@
                 // Year-by-year trend
                 slide5.addText('Year-by-Year Trend', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 14, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const tcTrend = [
-                    [year1, document.getElementById('tc2023').value],
-                    [year2, document.getElementById('tc2024').value],
-                    [year3, document.getElementById('tc2025').value]
+                    [year1, getVal('tc2023')],
+                    [year2, getVal('tc2024')],
+                    [year3, getVal('tc2025')]
                 ];
                 slide5.addChart(pptx.ChartType.bar, [{ name: 'Streets', labels: tcTrend.map(r => r[0]), values: tcTrend.map(r => parseInt(r[1])) }], {
                     x: 5.5, y: 1.6, w: 4, h: 2.5,
@@ -2392,7 +2397,7 @@
 
                 // Total speed cushions
                 slide5.addShape(pptx.ShapeType.roundRect, { x: 5.5, y: 4.3, w: 4, h: 0.8, fill: { color: 'fff5f5' }, line: { color: 'e53e3e', pt: 2 } });
-                slide5.addText('Total Speed Cushions: ' + document.getElementById('totalSpeedCushions').textContent, { x: 5.5, y: 4.4, w: 4, h: 0.6, fontSize: 14, bold: true, color: 'c53030', align: 'center', fontFace: 'Arial' });
+                slide5.addText('Total Speed Cushions: ' + getText('totalSpeedCushions'), { x: 5.5, y: 4.4, w: 4, h: 0.6, fontSize: 14, bold: true, color: 'c53030', align: 'center', fontFace: 'Arial' });
 
                 // ===== SLIDE 6: Lighting & Bike Infrastructure =====
                 let slide6 = pptx.addSlide();
@@ -2403,10 +2408,10 @@
                 slide6.addText('Lighting Infrastructure', { x: 0.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const lightingData = [
                     ['Component', 'Value'],
-                    ['Total Luminaires', document.getElementById('luminaires').value],
-                    ['Street Lighting Sets', document.getElementById('streetLightingSets').value],
-                    ['Solar School Zone Beacons', document.getElementById('solarBeacons').value],
-                    ['Solar Speed Signs', document.getElementById('solarSpeedSigns').value]
+                    ['Total Luminaires', getVal('luminaires')],
+                    ['Street Lighting Sets', getVal('streetLightingSets')],
+                    ['Solar Locations', getVal('solarLocations')],
+                    ['Solar Lights', getVal('solarLights')]
                 ];
                 slide6.addTable(lightingData, { x: 0.5, y: 1.6, w: 4.5, h: 2, colW: [3, 1.5], fill: { color: 'faf5ff' }, border: { pt: 0.5, color: 'd6bcfa' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
 
@@ -2414,17 +2419,17 @@
                 slide6.addText('Bike Lane Infrastructure', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
                 const bikeData = [
                     ['Metric', 'Value'],
-                    ['Bike Lane Projects', document.getElementById('bikeLaneProjects').value],
-                    ['Bike Lane Miles', document.getElementById('bikeLaneMiles').value],
-                    ['Guardrail Maintained', document.getElementById('guardrailMaintained').value]
+                    ['Bike Lane Projects', getVal('bikeLaneProjects')],
+                    ['Bike Lane Miles', getVal('bikeLaneMiles')],
+                    ['Guardrail Maintained', getVal('guardrailMaintained')]
                 ];
                 slide6.addTable(bikeData, { x: 5.5, y: 1.6, w: 4, h: 1.5, colW: [2.5, 1.5], fill: { color: 'e6fffa' }, border: { pt: 0.5, color: '81e6d9' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
 
                 // Bike lane trend
                 const bikeTrend = [
-                    [year1, document.getElementById('bike2023').value],
-                    [year2, document.getElementById('bike2024').value],
-                    [year3, document.getElementById('bike2025').value]
+                    [year1, getVal('bike2023')],
+                    [year2, getVal('bike2024')],
+                    [year3, getVal('bike2025')]
                 ];
                 slide6.addChart(pptx.ChartType.line, [{ name: 'Miles', labels: bikeTrend.map(r => r[0]), values: bikeTrend.map(r => parseFloat(r[1])) }], {
                     x: 5.5, y: 3.2, w: 4, h: 2,
