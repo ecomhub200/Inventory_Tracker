@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Traffic Engineering Division - Inventory Summary | Henrico County</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
     <style>
         :root {
             --primary-color: #1a365d;
@@ -145,6 +146,71 @@
         .btn-sheets {
             background: linear-gradient(135deg, #0f9d58 0%, #137333 100%);
             color: white;
+        }
+
+        .btn-ppt {
+            background: linear-gradient(135deg, #d24726 0%, #b7472a 100%);
+            color: white;
+        }
+
+        /* Action Bar at Bottom */
+        .action-bar {
+            background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 50%, #4a5568 100%);
+            padding: 1.5rem 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+        }
+
+        .action-bar-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .action-bar-info {
+            color: white;
+        }
+
+        .action-bar-info h3 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .action-bar-info p {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+
+        .action-bar .btn-group {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        @media print {
+            .action-bar {
+                display: none !important;
+            }
         }
 
         /* Google Sheets Modal Styles */
@@ -414,6 +480,21 @@
         .summary-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+            cursor: pointer;
+        }
+
+        .summary-card-link {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .summary-card:hover .summary-card-link {
+            opacity: 1;
         }
 
         .summary-card.signal { border-left-color: #3182ce; }
@@ -1025,24 +1106,16 @@
         <div class="header-content">
             <div class="header-title">
                 <h1>Traffic Engineering Division</h1>
+                <p style="opacity: 0.9; font-size: 0.95rem;">Henrico County Department of Public Works - Inventory Summary</p>
             </div>
             <div class="header-meta">
                 <div class="last-updated">Last Updated: <span id="lastUpdated">-</span></div>
                 <div class="btn-group" style="margin-top: 0.75rem;">
                     <button class="btn btn-save" onclick="saveData()">
-                        <span>💾</span> Save
+                        <span>💾</span> Quick Save
                     </button>
-                    <button class="btn btn-print" onclick="printReport()">
-                        <span>🖨️</span> Print PDF
-                    </button>
-                    <button class="btn btn-reset" onclick="resetToDefault()">
-                        <span>🔄</span> Reset
-                    </button>
-                    <button class="btn btn-clear" onclick="clearAll()">
-                        <span>🗑️</span> Clear All
-                    </button>
-                    <button class="btn btn-sheets" onclick="openSheetsModal()">
-                        <span>📊</span> Google Sheets
+                    <button class="btn btn-ppt" onclick="downloadPPT()">
+                        <span>📽️</span> Download PPT
                     </button>
                 </div>
             </div>
@@ -1052,31 +1125,38 @@
     <main class="container">
         <!-- Summary Cards -->
         <div class="summary-cards">
-            <div class="summary-card signal">
+            <div class="summary-card signal" onclick="navigateToSection('section-signals')" title="Click to view Signal Infrastructure">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Total Signal Locations</div>
                 <div class="summary-card-value" id="totalSignals">152</div>
             </div>
-            <div class="summary-card detection">
+            <div class="summary-card detection" onclick="navigateToSection('section-detection')" title="Click to view Detection Systems">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Detection Systems</div>
                 <div class="summary-card-value" id="totalDetection">142</div>
             </div>
-            <div class="summary-card pedestrian">
+            <div class="summary-card pedestrian" onclick="navigateToSection('section-pedestrian')" title="Click to view Pedestrian Facilities">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Ped Facilities</div>
                 <div class="summary-card-value" id="totalPed">34</div>
             </div>
-            <div class="summary-card lighting">
+            <div class="summary-card lighting" onclick="navigateToSection('section-lighting')" title="Click to view Lighting Infrastructure">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Total Luminaires</div>
                 <div class="summary-card-value" id="totalLuminaires">398</div>
             </div>
-            <div class="summary-card" style="border-left-color: #e53e3e;">
+            <div class="summary-card speedcushion" style="border-left-color: #e53e3e;" onclick="navigateToSection('section-speedcushions')" title="Click to view Traffic Calming Program">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Speed Cushions</div>
                 <div class="summary-card-value" id="totalSpeedCushions">539</div>
             </div>
-            <div class="summary-card" style="border-left-color: #319795;">
+            <div class="summary-card bikelane" style="border-left-color: #319795;" onclick="navigateToSection('section-bikelane')" title="Click to view Bike Lane Infrastructure">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Bike Lane Miles</div>
                 <div class="summary-card-value" id="totalBikeLanes">24.5</div>
             </div>
-            <div class="summary-card" style="border-left-color: #718096;">
+            <div class="summary-card guardrail" style="border-left-color: #718096;" onclick="navigateToSection('section-bikelane')" title="Click to view Guardrail Infrastructure">
+                <div class="summary-card-link">Click to view details →</div>
                 <div class="summary-card-label">Guardrail Maintained</div>
                 <div class="summary-card-value" id="totalGuardrail">916</div>
             </div>
@@ -1108,7 +1188,7 @@
 
         <div class="dashboard-grid">
             <!-- Signal Infrastructure -->
-            <div class="card">
+            <div class="card" id="section-signals">
                 <div class="card-header">
                     <span class="card-header-icon">🚦</span> Signal Infrastructure
                 </div>
@@ -1155,7 +1235,7 @@
             </div>
 
             <!-- Detection Systems -->
-            <div class="card">
+            <div class="card" id="section-detection">
                 <div class="card-header">
                     <span class="card-header-icon">📡</span> Detection Systems
                 </div>
@@ -1184,7 +1264,7 @@
             </div>
 
             <!-- Pedestrian Facilities -->
-            <div class="card">
+            <div class="card" id="section-pedestrian">
                 <div class="card-header">
                     <span class="card-header-icon">🚶</span> Pedestrian Facilities
                 </div>
@@ -1235,7 +1315,7 @@
             </div>
 
             <!-- Lighting Infrastructure -->
-            <div class="card">
+            <div class="card" id="section-lighting">
                 <div class="card-header">
                     <span class="card-header-icon">💡</span> Lighting Infrastructure
                 </div>
@@ -1267,7 +1347,7 @@
             </div>
 
             <!-- Traffic Calming Program -->
-            <div class="card full-width">
+            <div class="card full-width" id="section-speedcushions">
                 <div class="card-header">
                     <span class="card-header-icon">🛑</span> Traffic Calming Program
                 </div>
@@ -1324,7 +1404,7 @@
             </div>
 
             <!-- Bike Lane & Guardrail Infrastructure -->
-            <div class="card">
+            <div class="card" id="section-bikelane">
                 <div class="card-header">
                     <span class="card-header-icon">🚴</span> Bike Lane & Guardrail Infrastructure
                 </div>
@@ -1339,7 +1419,7 @@
                             <input type="number" class="form-input" id="bikeLaneMiles" value="24.5" step="0.1" onchange="updateCalculations()">
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Guardrail Maintained (Linear Feet)</label>
+                            <label class="form-label">Guardrail Total Number Maintained</label>
                             <input type="number" class="form-input" id="guardrailMaintained" value="916" onchange="updateGuardrail()">
                         </div>
                     </div>
@@ -1546,6 +1626,29 @@
             </div>
         </div>
 
+        <!-- Infrastructure Overview Section -->
+        <div class="card" style="margin-bottom: 1.5rem; background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);">
+            <div class="card-header" style="background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%);">
+                <span class="card-header-icon">📊</span> Infrastructure Overview Dashboard
+            </div>
+            <div class="card-body">
+                <div class="chart-row" style="margin: 0;">
+                    <div class="chart-card" style="flex: 1.2;">
+                        <div class="chart-card-title"><span>🎯</span> Total Infrastructure Distribution</div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="infrastructureOverviewChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card" style="flex: 1;">
+                        <div class="chart-card-title"><span>📈</span> Year-over-Year Growth Comparison</div>
+                        <div class="chart-container" style="height: 300px;">
+                            <canvas id="growthComparisonChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <!-- Charts Row -->
         <div class="chart-row">
             <div class="chart-card">
@@ -1619,6 +1722,36 @@
             </div>
             <div class="card-body">
                 <textarea class="notes-textarea" id="notes" placeholder="Enter any additional notes, observations, or action items here..."></textarea>
+            </div>
+        </div>
+
+        <!-- Action Bar -->
+        <div class="action-bar">
+            <div class="action-bar-content">
+                <div class="action-bar-info">
+                    <h3>Ready to Save or Export?</h3>
+                    <p>Last Updated: <span id="lastUpdatedBottom">-</span></p>
+                </div>
+                <div class="btn-group">
+                    <button class="btn btn-save" onclick="saveData()">
+                        <span>💾</span> Save
+                    </button>
+                    <button class="btn btn-ppt" onclick="downloadPPT()">
+                        <span>📽️</span> Download PPT
+                    </button>
+                    <button class="btn btn-print" onclick="printReport()">
+                        <span>🖨️</span> Print PDF
+                    </button>
+                    <button class="btn btn-reset" onclick="resetToDefault()">
+                        <span>🔄</span> Reset
+                    </button>
+                    <button class="btn btn-clear" onclick="clearAll()">
+                        <span>🗑️</span> Clear All
+                    </button>
+                    <button class="btn btn-sheets" onclick="openSheetsModal()">
+                        <span>📊</span> Google Sheets
+                    </button>
+                </div>
             </div>
         </div>
     </main>
@@ -1929,11 +2062,274 @@
         function printReport() {
             // Update charts before printing
             if (charts.signal) updateCharts();
-            
+
             // Small delay to ensure charts are rendered
             setTimeout(() => {
                 window.print();
             }, 300);
+        }
+
+        // Download PowerPoint Presentation
+        async function downloadPPT() {
+            const pptBtn = document.querySelector('.btn-ppt');
+            const originalText = pptBtn.innerHTML;
+            pptBtn.innerHTML = '<span>⏳</span> Generating...';
+            pptBtn.disabled = true;
+
+            try {
+                const pptx = new PptxGenJS();
+
+                // Set presentation properties
+                pptx.author = 'Traffic Engineering Division';
+                pptx.title = 'Traffic Engineering Inventory Summary';
+                pptx.subject = 'Henrico County Department of Public Works';
+                pptx.company = 'Henrico County';
+
+                // Define colors
+                const primaryColor = '1a365d';
+                const accentColor = '3182ce';
+                const successColor = '38a169';
+                const warningColor = 'd69e2e';
+
+                // Get current data
+                const year1 = document.getElementById('reportYear1').value;
+                const year2 = document.getElementById('reportYear2').value;
+                const year3 = document.getElementById('reportYear3').value;
+                const lastUpdated = document.getElementById('lastUpdated').textContent;
+
+                // ===== SLIDE 1: Title Slide =====
+                let slide1 = pptx.addSlide();
+                slide1.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: { color: primaryColor } });
+                slide1.addText('Traffic Engineering Division', { x: 0.5, y: 2.0, w: 9, h: 1, fontSize: 36, bold: true, color: 'ffffff', fontFace: 'Arial' });
+                slide1.addText('Inventory Summary Report', { x: 0.5, y: 2.8, w: 9, h: 0.6, fontSize: 24, color: 'ffffff', fontFace: 'Arial' });
+                slide1.addText('Henrico County Department of Public Works', { x: 0.5, y: 3.6, w: 9, h: 0.5, fontSize: 16, color: 'cccccc', fontFace: 'Arial' });
+                slide1.addText('Last Updated: ' + lastUpdated, { x: 0.5, y: 4.8, w: 9, h: 0.4, fontSize: 12, color: 'aaaaaa', fontFace: 'Arial' });
+
+                // ===== SLIDE 2: Executive Summary =====
+                let slide2 = pptx.addSlide();
+                slide2.addText('Executive Summary', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide2.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: accentColor } });
+
+                // Summary data boxes
+                const summaryData = [
+                    { label: 'Signal Locations', value: document.getElementById('totalSignals').textContent, color: '3182ce' },
+                    { label: 'Detection Systems', value: document.getElementById('totalDetection').textContent, color: '38a169' },
+                    { label: 'Ped Facilities', value: document.getElementById('totalPed').textContent, color: 'd69e2e' },
+                    { label: 'Luminaires', value: document.getElementById('totalLuminaires').textContent, color: '805ad5' },
+                    { label: 'Speed Cushions', value: document.getElementById('totalSpeedCushions').textContent, color: 'e53e3e' },
+                    { label: 'Bike Lane Miles', value: document.getElementById('totalBikeLanes').textContent, color: '319795' },
+                    { label: 'Guardrail', value: document.getElementById('totalGuardrail').textContent, color: '718096' }
+                ];
+
+                let xPos = 0.3;
+                let yPos = 1.2;
+                summaryData.forEach((item, index) => {
+                    if (index === 4) { xPos = 0.3; yPos = 3.2; }
+                    slide2.addShape(pptx.ShapeType.roundRect, { x: xPos, y: yPos, w: 2.2, h: 1.6, fill: { color: 'f7fafc' }, line: { color: item.color, pt: 2 } });
+                    slide2.addText(item.value, { x: xPos, y: yPos + 0.3, w: 2.2, h: 0.8, fontSize: 32, bold: true, color: primaryColor, align: 'center', fontFace: 'Arial' });
+                    slide2.addText(item.label, { x: xPos, y: yPos + 1.1, w: 2.2, h: 0.4, fontSize: 10, color: '718096', align: 'center', fontFace: 'Arial' });
+                    xPos += 2.4;
+                });
+
+                // ===== SLIDE 3: Signal Infrastructure =====
+                let slide3 = pptx.addSlide();
+                slide3.addText('Signal Infrastructure', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide3.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: '3182ce' } });
+
+                const signalData = [
+                    ['Component', 'Count'],
+                    ['Mast Arm Intersections', document.getElementById('mastArm').value],
+                    ['Span Wire Intersections', document.getElementById('spanWire').value],
+                    ['FYA (Flashing Yellow Arrow)', document.getElementById('fya').value],
+                    ['Battery Backup', document.getElementById('batteryBackup').value],
+                    ['Total Signals', document.getElementById('totalSignals').textContent]
+                ];
+
+                slide3.addTable(signalData, {
+                    x: 0.5, y: 1.2, w: 5, h: 2.5,
+                    colW: [3, 2],
+                    fill: { color: 'f7fafc' },
+                    border: { pt: 0.5, color: 'e2e8f0' },
+                    fontFace: 'Arial',
+                    fontSize: 12,
+                    color: '2d3748',
+                    autoPage: false
+                });
+
+                // Year-by-year trend
+                slide3.addText('Year-by-Year Trend', { x: 6, y: 1.2, w: 3.5, h: 0.4, fontSize: 14, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const signalTrend = [
+                    [year1, document.getElementById('signal2023').value],
+                    [year2, document.getElementById('signal2024').value],
+                    [year3, document.getElementById('signal2025').value]
+                ];
+                slide3.addChart(pptx.ChartType.bar, [{ name: 'Signals', labels: signalTrend.map(r => r[0]), values: signalTrend.map(r => parseInt(r[1])) }], {
+                    x: 6, y: 1.6, w: 3.5, h: 2.5,
+                    chartColors: ['3182ce'],
+                    showValue: true,
+                    valueFontSize: 10
+                });
+
+                // ===== SLIDE 4: Detection & Pedestrian =====
+                let slide4 = pptx.addSlide();
+                slide4.addText('Detection Systems & Pedestrian Facilities', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide4.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: successColor } });
+
+                // Detection Systems
+                slide4.addText('Detection Systems', { x: 0.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const detectionData = [
+                    ['Type', 'Count'],
+                    ['Loop Detection', document.getElementById('loopDetection').value],
+                    ['Video Detection', document.getElementById('videoDetection').value],
+                    ['Loop Phase', document.getElementById('loopPhase').value],
+                    ['CCTV Locations', document.getElementById('cctvLocations').value],
+                    ['Total', document.getElementById('totalDetection').textContent]
+                ];
+                slide4.addTable(detectionData, { x: 0.5, y: 1.6, w: 4, h: 2, colW: [2.5, 1.5], fill: { color: 'f0fff4' }, border: { pt: 0.5, color: '9ae6b4' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // Pedestrian Facilities
+                slide4.addText('Pedestrian Facilities', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const pedData = [
+                    ['Type', 'Count'],
+                    ['Pedestrian Flashers', document.getElementById('pedFlashers').value],
+                    ['HAWK Signals', document.getElementById('hawkSignals').value],
+                    ['Total', document.getElementById('totalPed').textContent]
+                ];
+                slide4.addTable(pedData, { x: 5.5, y: 1.6, w: 4, h: 1.5, colW: [2.5, 1.5], fill: { color: 'fffff0' }, border: { pt: 0.5, color: 'f6e05e' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // Ped trend chart
+                const pedTrend = [
+                    [year1, document.getElementById('ped2023').value],
+                    [year2, document.getElementById('ped2024').value],
+                    [year3, document.getElementById('ped2025').value]
+                ];
+                slide4.addChart(pptx.ChartType.line, [{ name: 'Ped Facilities', labels: pedTrend.map(r => r[0]), values: pedTrend.map(r => parseInt(r[1])) }], {
+                    x: 5.5, y: 3.2, w: 4, h: 2,
+                    chartColors: ['d69e2e'],
+                    showValue: true,
+                    lineDataSymbol: 'circle'
+                });
+
+                // ===== SLIDE 5: Traffic Calming =====
+                let slide5 = pptx.addSlide();
+                slide5.addText('Traffic Calming Program', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide5.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: 'e53e3e' } });
+
+                // By District data
+                const districts = ['Brookland', 'Fairfield', 'Three Chopt', 'Tuckahoe', 'Varina'];
+                const districtValues = districts.map(d => parseInt(document.getElementById('tc' + d.replace(' ', '')).value) || 0);
+
+                slide5.addChart(pptx.ChartType.pie, [{ name: 'By District', labels: districts, values: districtValues }], {
+                    x: 0.5, y: 1.2, w: 4.5, h: 3,
+                    showLegend: true,
+                    legendPos: 'b',
+                    chartColors: ['3182ce', '38a169', 'd69e2e', '805ad5', 'e53e3e']
+                });
+
+                // Year-by-year trend
+                slide5.addText('Year-by-Year Trend', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 14, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const tcTrend = [
+                    [year1, document.getElementById('tc2023').value],
+                    [year2, document.getElementById('tc2024').value],
+                    [year3, document.getElementById('tc2025').value]
+                ];
+                slide5.addChart(pptx.ChartType.bar, [{ name: 'Streets', labels: tcTrend.map(r => r[0]), values: tcTrend.map(r => parseInt(r[1])) }], {
+                    x: 5.5, y: 1.6, w: 4, h: 2.5,
+                    chartColors: ['e53e3e'],
+                    showValue: true
+                });
+
+                // Total speed cushions
+                slide5.addShape(pptx.ShapeType.roundRect, { x: 5.5, y: 4.3, w: 4, h: 0.8, fill: { color: 'fff5f5' }, line: { color: 'e53e3e', pt: 2 } });
+                slide5.addText('Total Speed Cushions: ' + document.getElementById('totalSpeedCushions').textContent, { x: 5.5, y: 4.4, w: 4, h: 0.6, fontSize: 14, bold: true, color: 'c53030', align: 'center', fontFace: 'Arial' });
+
+                // ===== SLIDE 6: Lighting & Bike Infrastructure =====
+                let slide6 = pptx.addSlide();
+                slide6.addText('Lighting & Bike Lane Infrastructure', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide6.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: '805ad5' } });
+
+                // Lighting
+                slide6.addText('Lighting Infrastructure', { x: 0.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const lightingData = [
+                    ['Component', 'Value'],
+                    ['Total Luminaires', document.getElementById('luminaires').value],
+                    ['Street Lighting Sets', document.getElementById('streetLightingSets').value],
+                    ['Solar School Zone Beacons', document.getElementById('solarBeacons').value],
+                    ['Solar Speed Signs', document.getElementById('solarSpeedSigns').value]
+                ];
+                slide6.addTable(lightingData, { x: 0.5, y: 1.6, w: 4.5, h: 2, colW: [3, 1.5], fill: { color: 'faf5ff' }, border: { pt: 0.5, color: 'd6bcfa' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // Bike Lane
+                slide6.addText('Bike Lane Infrastructure', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const bikeData = [
+                    ['Metric', 'Value'],
+                    ['Bike Lane Projects', document.getElementById('bikeLaneProjects').value],
+                    ['Bike Lane Miles', document.getElementById('bikeLaneMiles').value],
+                    ['Guardrail Maintained', document.getElementById('guardrailMaintained').value]
+                ];
+                slide6.addTable(bikeData, { x: 5.5, y: 1.6, w: 4, h: 1.5, colW: [2.5, 1.5], fill: { color: 'e6fffa' }, border: { pt: 0.5, color: '81e6d9' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // Bike lane trend
+                const bikeTrend = [
+                    [year1, document.getElementById('bike2023').value],
+                    [year2, document.getElementById('bike2024').value],
+                    [year3, document.getElementById('bike2025').value]
+                ];
+                slide6.addChart(pptx.ChartType.line, [{ name: 'Miles', labels: bikeTrend.map(r => r[0]), values: bikeTrend.map(r => parseFloat(r[1])) }], {
+                    x: 5.5, y: 3.2, w: 4, h: 2,
+                    chartColors: ['319795'],
+                    showValue: true,
+                    lineDataSymbol: 'circle'
+                });
+
+                // ===== SLIDE 7: Staff & Fleet =====
+                let slide7 = pptx.addSlide();
+                slide7.addText('Staff & Fleet Overview', { x: 0.5, y: 0.3, w: 9, h: 0.6, fontSize: 28, bold: true, color: primaryColor, fontFace: 'Arial' });
+                slide7.addShape(pptx.ShapeType.rect, { x: 0.5, y: 0.85, w: 2, h: 0.05, fill: { color: primaryColor } });
+
+                // Staff data
+                slide7.addText('Staff Breakdown', { x: 0.5, y: 1.2, w: 4.5, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const staffData = [
+                    ['Position', 'Count'],
+                    ['Division Manager', document.getElementById('divisionManager')?.value || '1'],
+                    ['Assistant Managers', document.getElementById('assistantManagers')?.value || '2'],
+                    ['Engineers', document.getElementById('engineers')?.value || '4'],
+                    ['Technicians', document.getElementById('technicians')?.value || '8'],
+                    ['Field Crews', document.getElementById('fieldCrews')?.value || '12']
+                ];
+                slide7.addTable(staffData, { x: 0.5, y: 1.6, w: 4.5, h: 2.5, colW: [3, 1.5], fill: { color: 'f7fafc' }, border: { pt: 0.5, color: 'e2e8f0' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // Fleet data
+                slide7.addText('Fleet Inventory', { x: 5.5, y: 1.2, w: 4, h: 0.4, fontSize: 16, bold: true, color: primaryColor, fontFace: 'Arial' });
+                const fleetData = [
+                    ['Vehicle Type', 'Count'],
+                    ['Bucket Trucks', document.getElementById('bucketTrucks')?.value || '3'],
+                    ['Service Vehicles', document.getElementById('serviceVehicles')?.value || '8'],
+                    ['Utility Trailers', document.getElementById('utilityTrailers')?.value || '5']
+                ];
+                slide7.addTable(fleetData, { x: 5.5, y: 1.6, w: 4, h: 1.5, colW: [2.5, 1.5], fill: { color: 'f7fafc' }, border: { pt: 0.5, color: 'e2e8f0' }, fontFace: 'Arial', fontSize: 11, color: '2d3748' });
+
+                // ===== SLIDE 8: Thank You =====
+                let slide8 = pptx.addSlide();
+                slide8.addShape(pptx.ShapeType.rect, { x: 0, y: 0, w: '100%', h: '100%', fill: { color: primaryColor } });
+                slide8.addText('Thank You', { x: 0, y: 2.0, w: '100%', h: 1, fontSize: 44, bold: true, color: 'ffffff', align: 'center', fontFace: 'Arial' });
+                slide8.addText('Traffic Engineering Division', { x: 0, y: 3.2, w: '100%', h: 0.6, fontSize: 20, color: 'cccccc', align: 'center', fontFace: 'Arial' });
+                slide8.addText('Henrico County Department of Public Works', { x: 0, y: 3.8, w: '100%', h: 0.5, fontSize: 14, color: 'aaaaaa', align: 'center', fontFace: 'Arial' });
+                slide8.addText('Questions?', { x: 0, y: 4.6, w: '100%', h: 0.5, fontSize: 18, color: 'ffffff', align: 'center', fontFace: 'Arial', italic: true });
+
+                // Generate and download
+                const fileName = 'Traffic_Engineering_Report_' + new Date().toISOString().slice(0,10) + '.pptx';
+                await pptx.writeFile({ fileName: fileName });
+
+                showToast('PowerPoint presentation downloaded successfully!');
+
+            } catch (error) {
+                console.error('Error generating PPT:', error);
+                showToast('Error generating presentation: ' + error.message);
+            } finally {
+                pptBtn.innerHTML = originalText;
+                pptBtn.disabled = false;
+            }
         }
 
         // Save Data (saves to both localStorage and Google Sheets)
@@ -1950,6 +2346,9 @@
                 // Save to localStorage
                 localStorage.setItem('trafficInventory', JSON.stringify(data));
                 document.getElementById('lastUpdated').textContent = data.lastUpdated;
+                // Update bottom action bar timestamp
+                const bottomTimestamp = document.getElementById('lastUpdatedBottom');
+                if (bottomTimestamp) bottomTimestamp.textContent = data.lastUpdated;
 
                 // Save to Google Sheets
                 await fetch(GOOGLE_SHEETS_API_URL, {
@@ -1984,9 +2383,13 @@
                 });
                 if (data.lastUpdated) {
                     document.getElementById('lastUpdated').textContent = data.lastUpdated;
+                    const bottomTimestamp = document.getElementById('lastUpdatedBottom');
+                    if (bottomTimestamp) bottomTimestamp.textContent = data.lastUpdated;
                 }
             } else {
                 document.getElementById('lastUpdated').textContent = 'Not yet saved';
+                const bottomTimestamp = document.getElementById('lastUpdatedBottom');
+                if (bottomTimestamp) bottomTimestamp.textContent = 'Not yet saved';
             }
         }
 
@@ -2064,6 +2467,20 @@
                 updateDistrictTotal();
                 updateGuardrail();
                 showToast('All data cleared');
+            }
+        }
+
+        // Navigate to Section (for clickable summary cards)
+        function navigateToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Add highlight effect
+                element.style.transition = 'box-shadow 0.3s ease';
+                element.style.boxShadow = '0 0 20px rgba(49, 130, 206, 0.5)';
+                setTimeout(() => {
+                    element.style.boxShadow = '';
+                }, 2000);
             }
         }
 
@@ -2258,6 +2675,115 @@
                     maintainAspectRatio: false,
                     plugins: { legend: { display: false } },
                     scales: { y: { beginAtZero: true } }
+                }
+            });
+
+            // Infrastructure Overview Chart (Doughnut)
+            const infraCtx = document.getElementById('infrastructureOverviewChart').getContext('2d');
+            charts.infraOverview = new Chart(infraCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Signal Locations', 'Detection Systems', 'Ped Facilities', 'Luminaires', 'Speed Cushions', 'Bike Lane Miles', 'Guardrail'],
+                    datasets: [{
+                        data: [
+                            parseInt(document.getElementById('totalSignals').textContent) || 0,
+                            parseInt(document.getElementById('totalDetection').textContent) || 0,
+                            parseInt(document.getElementById('totalPed').textContent) || 0,
+                            parseInt(document.getElementById('totalLuminaires').textContent) || 0,
+                            parseInt(document.getElementById('totalSpeedCushions').textContent) || 0,
+                            parseFloat(document.getElementById('totalBikeLanes').textContent) * 10 || 0,
+                            parseInt(document.getElementById('totalGuardrail').textContent) || 0
+                        ],
+                        backgroundColor: ['#3182ce', '#38a169', '#d69e2e', '#805ad5', '#e53e3e', '#319795', '#718096'],
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '50%',
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: { font: { size: 11 }, padding: 15 }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Infrastructure Asset Distribution',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    }
+                }
+            });
+
+            // Growth Comparison Chart (Multi-line)
+            const growthCtx = document.getElementById('growthComparisonChart').getContext('2d');
+            charts.growth = new Chart(growthCtx, {
+                type: 'line',
+                data: {
+                    labels: [
+                        document.getElementById('reportYear1').value,
+                        document.getElementById('reportYear2').value,
+                        document.getElementById('reportYear3').value
+                    ],
+                    datasets: [
+                        {
+                            label: 'Signals',
+                            data: [
+                                parseInt(document.getElementById('signal2023').value) || 0,
+                                parseInt(document.getElementById('signal2024').value) || 0,
+                                parseInt(document.getElementById('signal2025').value) || 0
+                            ],
+                            borderColor: '#3182ce',
+                            backgroundColor: 'rgba(49, 130, 206, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Ped Facilities',
+                            data: [
+                                parseInt(document.getElementById('ped2023').value) || 0,
+                                parseInt(document.getElementById('ped2024').value) || 0,
+                                parseInt(document.getElementById('ped2025').value) || 0
+                            ],
+                            borderColor: '#d69e2e',
+                            backgroundColor: 'rgba(214, 158, 46, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4
+                        },
+                        {
+                            label: 'Bike Miles',
+                            data: [
+                                parseFloat(document.getElementById('bike2023').value) || 0,
+                                parseFloat(document.getElementById('bike2024').value) || 0,
+                                parseFloat(document.getElementById('bike2025').value) || 0
+                            ],
+                            borderColor: '#319795',
+                            backgroundColor: 'rgba(49, 151, 149, 0.1)',
+                            borderWidth: 2,
+                            tension: 0.3,
+                            pointRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { font: { size: 10 } } },
+                        title: {
+                            display: true,
+                            text: 'Multi-Year Growth Trends',
+                            font: { size: 14, weight: 'bold' }
+                        }
+                    },
+                    scales: {
+                        y: { beginAtZero: false, title: { display: true, text: 'Count/Miles' } },
+                        x: { title: { display: true, text: 'Year' } }
+                    }
                 }
             });
 
@@ -2511,6 +3037,40 @@
                 parseInt(document.getElementById('signMarkingTotal').textContent) || 0
             ];
             charts.staff.update();
+
+            // Update Infrastructure Overview Chart
+            if (charts.infraOverview) {
+                charts.infraOverview.data.datasets[0].data = [
+                    parseInt(document.getElementById('totalSignals').textContent) || 0,
+                    parseInt(document.getElementById('totalDetection').textContent) || 0,
+                    parseInt(document.getElementById('totalPed').textContent) || 0,
+                    parseInt(document.getElementById('totalLuminaires').textContent) || 0,
+                    parseInt(document.getElementById('totalSpeedCushions').textContent) || 0,
+                    parseFloat(document.getElementById('totalBikeLanes').textContent) * 10 || 0,
+                    parseInt(document.getElementById('totalGuardrail').textContent) || 0
+                ];
+                charts.infraOverview.update();
+            }
+
+            // Update Growth Comparison Chart
+            if (charts.growth) {
+                charts.growth.data.datasets[0].data = [
+                    parseInt(document.getElementById('signal2023').value) || 0,
+                    parseInt(document.getElementById('signal2024').value) || 0,
+                    parseInt(document.getElementById('signal2025').value) || 0
+                ];
+                charts.growth.data.datasets[1].data = [
+                    parseInt(document.getElementById('ped2023').value) || 0,
+                    parseInt(document.getElementById('ped2024').value) || 0,
+                    parseInt(document.getElementById('ped2025').value) || 0
+                ];
+                charts.growth.data.datasets[2].data = [
+                    parseFloat(document.getElementById('bike2023').value) || 0,
+                    parseFloat(document.getElementById('bike2024').value) || 0,
+                    parseFloat(document.getElementById('bike2025').value) || 0
+                ];
+                charts.growth.update();
+            }
         }
 
         // Update Trend Charts
