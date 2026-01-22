@@ -1761,8 +1761,8 @@
                     <button class="btn btn-clear" onclick="clearAll()">
                         <span>🗑️</span> Clear All
                     </button>
-                    <button class="btn btn-sheets" onclick="openSheetsModal()">
-                        <span>📊</span> Google Sheets
+                    <button class="btn btn-sheets" onclick="openSheetsModal()" title="Google Sheets sync is temporarily disabled">
+                        <span>📊</span> Google Sheets (Disabled)
                     </button>
                 </div>
             </div>
@@ -1787,8 +1787,8 @@
                 <!-- Connection Status -->
                 <div class="sheets-section">
                     <div class="sheets-section-title"><span>🔗</span> Connection Status</div>
-                    <div id="connectionStatus" class="sheets-status info show">
-                        Connected to Google Sheets database
+                    <div id="connectionStatus" class="sheets-status error show">
+                        ⚠️ Google Sheets sync is temporarily disabled. The auto-sync was causing charts to not display. Data is saved locally. Re-enable in the code when ready.
                     </div>
                 </div>
 
@@ -2063,14 +2063,15 @@
             loadData();
             updateCalculations();
             updateStaffCalculations();
-            // Try to load from Google Sheets (will use cloud data if newer)
-            tryLoadFromCloud();
+            // DISABLED: Google Sheets integration was causing charts to not render
+            // Uncomment the lines below to re-enable Google Sheets sync
+            // tryLoadFromCloud();
             updateDistrictTotal();
             updateGuardrail();
             initCharts();
             updateYearLabels();
-            // Load history from Google Sheets
-            loadMainHistory();
+            // DISABLED: Google Sheets history loading
+            // loadMainHistory();
         });
 
         // Load and display history on main page
