@@ -2108,7 +2108,7 @@
                              parseInt(data.threeChopt || 0) + parseInt(data.tuckahoe || 0) +
                              parseInt(data.varina || 0)) * 7 : '-';
 
-                        return \`
+                        return `
                             <div class="history-card" onclick="restoreFromHistory(\${index})" style="
                                 background: white;
                                 border: 2px solid #e2e8f0;
@@ -2143,20 +2143,20 @@
                                     Click to restore this version
                                 </div>
                             </div>
-                        \`;
+                        `;
                     }).join('');
                 } else {
-                    historyList.innerHTML = \`
+                    historyList.innerHTML = `
                         <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #718096; background: #f7fafc; border-radius: 8px;">
                             <span style="font-size: 2.5rem;">📭</span>
                             <p style="margin-top: 0.75rem; font-weight: 600;">No saved history found</p>
                             <p style="font-size: 0.85rem;">Save your data to create history entries</p>
                         </div>
-                    \`;
+                    `;
                 }
             } catch (error) {
                 console.error('Error loading history:', error);
-                historyList.innerHTML = \`
+                historyList.innerHTML = `
                     <div style="grid-column: 1 / -1; padding: 2rem; text-align: center; color: #e53e3e; background: #fff5f5; border-radius: 8px;">
                         <span style="font-size: 2.5rem;">⚠️</span>
                         <p style="margin-top: 0.75rem; font-weight: 600;">Could not load history</p>
@@ -2165,19 +2165,19 @@
                             Try Again
                         </button>
                     </div>
-                \`;
+                `;
             }
         }
 
         // Refresh history
         function refreshHistory() {
             const historyList = document.getElementById('mainHistoryList');
-            historyList.innerHTML = \`
+            historyList.innerHTML = `
                 <div style="grid-column: 1 / -1; padding: 1rem; text-align: center; color: #718096;">
                     <span style="font-size: 2rem;">⏳</span>
                     <p style="margin-top: 0.5rem;">Refreshing history...</p>
                 </div>
-            \`;
+            `;
             loadMainHistory();
         }
 
