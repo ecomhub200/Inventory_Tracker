@@ -1,0 +1,2378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traffic Engineering Division - Inventory Summary | Henrico County</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400&family=DM+Serif+Display&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        :root {
+            --navy: #0f2540;
+            --navy-mid: #1a365d;
+            --navy-light: #2c5282;
+            --blue: #3182ce;
+            --blue-light: #63b3ed;
+            --green: #276749;
+            --green-light: #38a169;
+            --gold: #b7791f;
+            --gold-light: #d69e2e;
+            --red: #9b2c2c;
+            --red-light: #c53030;
+            --purple: #553c9a;
+            --purple-light: #805ad5;
+            --teal: #234e52;
+            --teal-light: #319795;
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            --card-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.06);
+            --card-shadow-hover: 0 10px 25px rgba(0,0,0,0.1), 0 4px 10px rgba(0,0,0,0.06);
+            --radius: 10px;
+            --radius-lg: 14px;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Source Sans 3', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--gray-100);
+            color: var(--gray-800);
+            line-height: 1.6;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ═══════════════════════════════════════
+           HEADER
+           ═══════════════════════════════════════ */
+        .header {
+            background: var(--navy);
+            color: white;
+            padding: 1.25rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.25);
+        }
+        .header-inner {
+            max-width: 1440px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-logo {
+            width: 44px; height: 44px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .header-text h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.35rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            line-height: 1.2;
+        }
+        .header-text p {
+            font-size: 0.78rem;
+            opacity: 0.7;
+            font-weight: 300;
+            letter-spacing: 0.3px;
+        }
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .header-timestamp {
+            font-size: 0.75rem;
+            opacity: 0.6;
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        /* ═══════════════════════════════════════
+           FLOATING ACTION BAR — Always Visible
+           ═══════════════════════════════════════ */
+        .fab-container {
+            position: fixed;
+            top: 74px;
+            right: 6px;
+            z-index: 90;
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+            transition: opacity 0.3s;
+        }
+        .fab-btn {
+            width: 28px; height: 28px;
+            border-radius: 7px;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 0.72rem;
+            transition: all 0.15s ease;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+            position: relative;
+            flex-shrink: 0;
+        }
+        .fab-btn:hover {
+            transform: scale(1.12);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.28);
+        }
+        .fab-btn:hover .fab-tooltip {
+            opacity: 1;
+            transform: translateX(-5px);
+            pointer-events: auto;
+        }
+        .fab-tooltip {
+            position: absolute;
+            right: 34px;
+            background: var(--gray-800);
+            color: white;
+            padding: 2px 7px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            transform: translateX(0);
+            transition: all 0.15s ease;
+            pointer-events: none;
+            letter-spacing: 0.3px;
+        }
+        .fab-save { background: var(--green-light); color: white; }
+        .fab-pdf { background: #dc2626; color: white; }
+        .fab-ppt { background: #d97706; color: white; }
+        .fab-print { background: var(--blue); color: white; }
+        .fab-export { background: var(--purple-light); color: white; }
+        .fab-add { background: var(--teal-light); color: white; }
+        .fab-clear { background: var(--red-light); color: white; }
+        .fab-sep {
+            width: 20px; height: 1px;
+            background: var(--gray-300);
+            margin: 0 auto;
+        }
+
+        /* ═══════════════════════════════════════
+           MAIN CONTAINER
+           ═══════════════════════════════════════ */
+        .container {
+            max-width: 1440px;
+            margin: 0 auto;
+            padding: 1.5rem 2.5rem 3rem 2rem;
+        }
+
+        /* ═══════════════════════════════════════
+           SUMMARY CARDS (KPI Bar)
+           ═══════════════════════════════════════ */
+        .kpi-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+            gap: 10px;
+            margin-bottom: 1.5rem;
+        }
+        .kpi-card {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1rem 1.1rem;
+            box-shadow: var(--card-shadow);
+            border-left: 4px solid var(--blue);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .kpi-card:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+        }
+        .kpi-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: var(--gray-500);
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 4px;
+        }
+        .kpi-value {
+            font-size: 1.9rem;
+            font-weight: 800;
+            color: var(--navy);
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+        }
+        .kpi-signal { border-left-color: var(--blue); }
+        .kpi-detection { border-left-color: var(--green-light); }
+        .kpi-ped { border-left-color: var(--gold-light); }
+        .kpi-light { border-left-color: var(--purple-light); }
+        .kpi-speed { border-left-color: var(--red-light); }
+        .kpi-bike { border-left-color: var(--teal-light); }
+        .kpi-guard { border-left-color: var(--gray-500); }
+
+        /* ═══════════════════════════════════════
+           YEAR CONFIG BAR
+           ═══════════════════════════════════════ */
+        .year-config {
+            background: white;
+            border-radius: var(--radius);
+            padding: 1rem 1.25rem;
+            box-shadow: var(--card-shadow);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .year-config-label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--navy);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+        }
+        .year-config-inputs {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+        .year-input-group {
+            display: flex;
+            align-items: center;
+            gap: 0.35rem;
+        }
+        .year-input-group label {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--gray-500);
+        }
+        .year-input {
+            width: 72px;
+            padding: 0.4rem 0.5rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-align: center;
+            color: var(--navy);
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+        .year-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+        }
+
+        /* ═══════════════════════════════════════
+           SECTION CARDS
+           ═══════════════════════════════════════ */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+            margin-bottom: 1.25rem;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .grid-2 { grid-template-columns: 1fr; }
+        }
+        .section-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--card-shadow);
+            overflow: hidden;
+            transition: box-shadow 0.2s;
+        }
+        .section-card:hover {
+            box-shadow: var(--card-shadow-hover);
+        }
+        .section-header {
+            background: var(--navy);
+            color: white;
+            padding: 0.7rem 1.2rem;
+            font-size: 0.92rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            letter-spacing: 0.2px;
+        }
+        .section-header-icon {
+            font-size: 1.1rem;
+            opacity: 0.85;
+        }
+        .section-body {
+            padding: 1.25rem;
+        }
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        /* ═══════════════════════════════════════
+           FORM ELEMENTS
+           ═══════════════════════════════════════ */
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 0.85rem;
+        }
+        .form-group { margin-bottom: 0.7rem; }
+        .form-label {
+            display: block;
+            font-size: 0.73rem;
+            font-weight: 600;
+            color: var(--gray-500);
+            margin-bottom: 3px;
+            letter-spacing: 0.2px;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.55rem 0.75rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.92rem;
+            font-weight: 600;
+            color: var(--gray-800);
+            font-family: inherit;
+            transition: all 0.2s;
+            background: var(--gray-50);
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.08);
+        }
+        .form-input::-webkit-inner-spin-button { opacity: 1; }
+
+        .sub-section {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 0.9rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--gray-200);
+        }
+        .sub-title {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--navy-light);
+            margin-bottom: 0.6rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .section-divider {
+            border: none;
+            border-top: 1px solid var(--gray-200);
+            margin: 0.9rem 0;
+        }
+
+        /* ═══════════════════════════════════════
+           STAFF TABLE
+           ═══════════════════════════════════════ */
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 8px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+        }
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.82rem;
+        }
+        .data-table th {
+            background: var(--navy);
+            color: white;
+            padding: 0.6rem 0.4rem;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.7rem;
+            letter-spacing: 0.3px;
+            white-space: nowrap;
+        }
+        .data-table td {
+            padding: 0.45rem 0.35rem;
+            text-align: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        .data-table .pos-label {
+            text-align: left;
+            font-weight: 600;
+            background: var(--gray-50);
+            padding-left: 0.8rem;
+            color: var(--gray-700);
+        }
+        .tbl-input {
+            width: 50px;
+            padding: 0.3rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 5px;
+            text-align: center;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: inherit;
+            color: var(--gray-700);
+            transition: border-color 0.2s;
+        }
+        .tbl-input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 2px rgba(49,130,206,0.1);
+        }
+        .row-total, .col-total {
+            font-weight: 700;
+            color: var(--navy-light);
+            background: #eef2ff;
+        }
+        .grand-total {
+            font-weight: 800;
+            color: white;
+            background: var(--blue) !important;
+        }
+        .data-table tbody tr:hover {
+            background: #f0f7ff;
+        }
+        .total-row td {
+            border-top: 2px solid var(--navy);
+        }
+
+        /* ═══════════════════════════════════════
+           TRAFFIC CALMING LAYOUT
+           ═══════════════════════════════════════ */
+        .tc-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.25rem;
+        }
+        .district-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.6rem;
+            margin-top: 0.5rem;
+        }
+        @media (max-width: 600px) {
+            .tc-grid, .district-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ═══════════════════════════════════════
+           CHARTS DASHBOARD
+           ═══════════════════════════════════════ */
+        .charts-section-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.3rem;
+            color: var(--navy);
+            margin: 1.5rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--gray-200);
+        }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+        .chart-card {
+            background: white;
+            border-radius: var(--radius-lg);
+            padding: 1.25rem;
+            box-shadow: var(--card-shadow);
+        }
+        .chart-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .chart-box {
+            position: relative;
+            height: 280px;
+        }
+
+        /* ═══════════════════════════════════════
+           NOTES
+           ═══════════════════════════════════════ */
+        .notes-area {
+            width: 100%;
+            min-height: 100px;
+            padding: 0.85rem;
+            border: 1.5px solid var(--gray-200);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--gray-700);
+            resize: vertical;
+            transition: border-color 0.2s;
+            background: var(--gray-50);
+        }
+        .notes-area:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.08);
+        }
+
+        /* ═══════════════════════════════════════
+           ADD SECTION MODAL
+           ═══════════════════════════════════════ */
+        .modal-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            width: 92%;
+            max-width: 560px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.3);
+            animation: modalIn 0.25s ease;
+        }
+        @keyframes modalIn {
+            from { opacity: 0; transform: translateY(-15px) scale(0.97); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-head {
+            background: var(--navy);
+            color: white;
+            padding: 1rem 1.25rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 16px 16px 0 0;
+        }
+        .modal-head h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+        .modal-close {
+            background: rgba(255,255,255,0.2);
+            border: none;
+            color: white;
+            width: 32px; height: 32px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex; align-items: center; justify-content: center;
+            transition: background 0.2s;
+        }
+        .modal-close:hover { background: rgba(255,255,255,0.3); }
+        .modal-body { padding: 1.25rem; }
+        .modal-field { margin-bottom: 1rem; }
+        .modal-field label {
+            display: block;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: var(--gray-600);
+            margin-bottom: 4px;
+        }
+        .modal-field input, .modal-field select {
+            width: 100%;
+            padding: 0.55rem 0.75rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-family: inherit;
+            color: var(--gray-800);
+        }
+        .modal-field input:focus, .modal-field select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(49,130,206,0.1);
+        }
+        .modal-fields-list {
+            background: var(--gray-50);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid var(--gray-200);
+        }
+        .modal-field-row {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+            align-items: center;
+        }
+        .modal-field-row input {
+            flex: 1;
+            padding: 0.4rem 0.6rem;
+            border: 1.5px solid var(--gray-300);
+            border-radius: 6px;
+            font-size: 0.82rem;
+            font-family: inherit;
+        }
+        .modal-field-row button {
+            width: 28px; height: 28px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .btn-add-field {
+            background: var(--green-light);
+            color: white;
+        }
+        .btn-remove-field {
+            background: var(--red-light);
+            color: white;
+        }
+        .modal-actions {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-end;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--gray-200);
+        }
+        .modal-btn {
+            padding: 0.6rem 1.25rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .modal-btn-primary {
+            background: var(--blue);
+            color: white;
+        }
+        .modal-btn-primary:hover { background: var(--navy-light); }
+        .modal-btn-cancel {
+            background: var(--gray-200);
+            color: var(--gray-600);
+        }
+        .modal-btn-cancel:hover { background: var(--gray-300); }
+
+        /* ═══════════════════════════════════════
+           TOAST
+           ═══════════════════════════════════════ */
+        .toast {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--navy);
+            color: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+            transform: translateY(80px);
+            opacity: 0;
+            transition: all 0.35s ease;
+            z-index: 300;
+            font-size: 0.85rem;
+            font-weight: 600;
+            max-width: 350px;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
+
+        /* ═══════════════════════════════════════
+           PRINT FOOTER
+           ═══════════════════════════════════════ */
+        .print-footer-el { display: none; }
+
+        /* ═══════════════════════════════════════
+           CUSTOM SECTION (Dynamic)
+           ═══════════════════════════════════════ */
+        .custom-section-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.35rem;
+            margin-bottom: 0.5rem;
+        }
+        .cs-btn {
+            padding: 0.25rem 0.6rem;
+            border-radius: 5px;
+            border: 1px solid var(--gray-300);
+            background: white;
+            color: var(--gray-500);
+            font-size: 0.7rem;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+        .cs-btn:hover { border-color: var(--blue); color: var(--blue); }
+        .cs-btn-danger:hover { border-color: var(--red-light); color: var(--red-light); }
+
+        /* ═══════════════════════════════════════
+           PDF GENERATION OVERLAY
+           ═══════════════════════════════════════ */
+        .pdf-overlay {
+            position: fixed; inset: 0;
+            background: rgba(15,37,64,0.85);
+            display: none; justify-content: center; align-items: center;
+            z-index: 500;
+            backdrop-filter: blur(4px);
+        }
+        .pdf-overlay.show { display: flex; }
+        .pdf-progress {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem 2.5rem;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+        }
+        .pdf-progress h3 {
+            font-size: 1.1rem;
+            color: var(--navy);
+            margin-bottom: 0.75rem;
+        }
+        .pdf-progress p {
+            font-size: 0.85rem;
+            color: var(--gray-500);
+        }
+        .pdf-spinner {
+            width: 40px; height: 40px;
+            border: 3px solid var(--gray-200);
+            border-top: 3px solid var(--blue);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* ═══════════════════════════════════════
+           PRINT STYLES
+           ═══════════════════════════════════════ */
+        @media print {
+            @page { size: A4 portrait; margin: 0.5in; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            body { background: white !important; font-size: 9pt; }
+            .header { position: relative !important; padding: 0.75rem 1rem; }
+            .fab-container, .toast, .modal-overlay, .pdf-overlay { display: none !important; }
+            .container { padding: 0.75rem 0; max-width: none; }
+            .kpi-bar { grid-template-columns: repeat(4, 1fr) !important; gap: 6px; margin-bottom: 0.75rem; }
+            .kpi-card { padding: 0.5rem 0.6rem; box-shadow: none; border: 1px solid #ddd; }
+            .kpi-label { font-size: 6pt; }
+            .kpi-value { font-size: 16pt; }
+            .year-config { padding: 0.5rem 0.75rem; box-shadow: none; border: 1px solid #ddd; }
+            .grid-2 { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+            .section-card { box-shadow: none; border: 1px solid #ccc; break-inside: avoid; }
+            .section-header { padding: 0.5rem 0.8rem; font-size: 9pt; }
+            .section-body { padding: 0.75rem; }
+            .form-input, .tbl-input { border: none !important; border-bottom: 1px solid #ccc !important; background: transparent !important; padding: 0.2rem 0.3rem; font-size: 8pt; box-shadow: none !important; }
+            .form-label { font-size: 7pt; }
+            .chart-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 8px; }
+            .chart-card { box-shadow: none; border: 1px solid #ddd; padding: 0.75rem; break-inside: avoid; }
+            .chart-box { height: 180px !important; }
+            .data-table { font-size: 7.5pt; }
+            .data-table th { padding: 0.35rem; font-size: 6.5pt; }
+            .tbl-input { width: 36px; font-size: 7.5pt; }
+            .notes-area { border: 1px solid #ccc !important; background: #fafafa !important; min-height: 60px; font-size: 8pt; }
+            .print-footer-el { display: block !important; text-align: center; font-size: 7.5pt; color: #666; padding: 0.5rem; border-top: 1px solid #ddd; margin-top: 1rem; }
+            .custom-section-actions, .cs-btn { display: none !important; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ═══════════════════ HEADER ═══════════════════ -->
+    <header class="header" id="pageHeader">
+        <div class="header-inner">
+            <div class="header-brand">
+                <div class="header-logo">🏛️</div>
+                <div class="header-text">
+                    <h1>Traffic Engineering Division</h1>
+                    <p>Henrico County Department of Public Works &bull; Inventory Summary</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <div class="header-timestamp">
+                    Last Updated<br><strong id="lastUpdated">Not yet saved</strong>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- ═══════════════════ FLOATING ACTION BAR ═══════════════════ -->
+    <div class="fab-container" id="fabBar">
+        <button class="fab-btn fab-save" onclick="saveData()" title="Save"><span class="fab-tooltip">Save</span>💾</button>
+        <button class="fab-btn fab-pdf" onclick="downloadPDF()" title="PDF"><span class="fab-tooltip">PDF</span>📄</button>
+        <button class="fab-btn fab-ppt" onclick="downloadPPT()" title="PPT"><span class="fab-tooltip">PPT</span>📊</button>
+        <button class="fab-btn fab-print" onclick="printReport()" title="Print"><span class="fab-tooltip">Print</span>🖨️</button>
+        <button class="fab-btn fab-export" onclick="exportWithData()" title="Export"><span class="fab-tooltip">Export</span>📦</button>
+        <div class="fab-sep"></div>
+        <button class="fab-btn fab-add" onclick="openAddSectionModal()" title="Add"><span class="fab-tooltip">Add Section</span>➕</button>
+        <button class="fab-btn fab-clear" onclick="clearAll()" title="Clear"><span class="fab-tooltip">Clear All</span>🗑️</button>
+    </div>
+
+    <!-- ═══════════════════ MAIN CONTENT ═══════════════════ -->
+    <main class="container" id="mainContent">
+
+        <!-- KPI Summary Bar -->
+        <div class="kpi-bar" id="kpiBar">
+            <div class="kpi-card kpi-signal" onclick="scrollToSection('sec-signals')">
+                <div class="kpi-label">Total Signal Locations</div>
+                <div class="kpi-value" id="totalSignals">152</div>
+            </div>
+            <div class="kpi-card kpi-detection" onclick="scrollToSection('sec-detection')">
+                <div class="kpi-label">Detection Systems</div>
+                <div class="kpi-value" id="totalDetection">142</div>
+            </div>
+            <div class="kpi-card kpi-ped" onclick="scrollToSection('sec-ped')">
+                <div class="kpi-label">Ped Facilities</div>
+                <div class="kpi-value" id="totalPed">34</div>
+            </div>
+            <div class="kpi-card kpi-light" onclick="scrollToSection('sec-lighting')">
+                <div class="kpi-label">Total Luminaires</div>
+                <div class="kpi-value" id="totalLuminaires">398</div>
+            </div>
+            <div class="kpi-card kpi-speed" onclick="scrollToSection('sec-calming')">
+                <div class="kpi-label">Speed Cushions</div>
+                <div class="kpi-value" id="totalSpeedCushions">539</div>
+            </div>
+            <div class="kpi-card kpi-bike" onclick="scrollToSection('sec-bike')">
+                <div class="kpi-label">Bike Lane Miles</div>
+                <div class="kpi-value" id="totalBikeLanes">60.05</div>
+            </div>
+            <div class="kpi-card kpi-guard" onclick="scrollToSection('sec-bike')">
+                <div class="kpi-label">Guardrail Maintained</div>
+                <div class="kpi-value" id="totalGuardrail">916</div>
+            </div>
+        </div>
+
+        <!-- Year Configuration -->
+        <div class="year-config">
+            <div class="year-config-label">📅 Reporting Years</div>
+            <div class="year-config-inputs">
+                <div class="year-input-group">
+                    <label>Year 1</label>
+                    <input type="number" class="year-input form-input" id="reportYear1" value="2023" onchange="updateYearLabels()">
+                </div>
+                <div class="year-input-group">
+                    <label>Year 2</label>
+                    <input type="number" class="year-input form-input" id="reportYear2" value="2024" onchange="updateYearLabels()">
+                </div>
+                <div class="year-input-group">
+                    <label>Year 3</label>
+                    <input type="number" class="year-input form-input" id="reportYear3" value="2025" onchange="updateYearLabels()">
+                </div>
+            </div>
+        </div>
+
+        <!-- ═══════════ DATA SECTIONS ═══════════ -->
+        <div class="grid-2" id="sectionsGrid">
+
+            <!-- Signal Infrastructure -->
+            <div class="section-card" id="sec-signals">
+                <div class="section-header"><span class="section-header-icon">🚦</span> Signal Infrastructure</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Mast Arm Intersections</label>
+                            <input type="number" class="form-input" id="mastArm" value="139" onchange="updateCalc()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Span Wire Intersections</label>
+                            <input type="number" class="form-input" id="spanWire" value="13" onchange="updateCalc()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">FYA (Flashing Yellow Arrow)</label>
+                            <input type="number" class="form-input" id="fya" value="60" onchange="updateCalc()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Battery Backup Locations</label>
+                            <input type="text" class="form-input" id="batteryBackup" value="Every intersection">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">📅 Year-by-Year Total Signals</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Total</label>
+                                <input type="number" class="form-input" id="signal2023" value="145" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Total</label>
+                                <input type="number" class="form-input" id="signal2024" value="150" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Total</label>
+                                <input type="number" class="form-input" id="signal2025" value="152" onchange="updateTrends()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detection Systems -->
+            <div class="section-card" id="sec-detection">
+                <div class="section-header"><span class="section-header-icon">📡</span> Detection Systems</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Loop Detection Intersections</label>
+                            <input type="number" class="form-input" id="loopDetection" value="99" onchange="updateCalc()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Video Detection Intersections</label>
+                            <input type="number" class="form-input" id="videoDetection" value="40" onchange="updateCalc()">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Loop Detection Running Phase</label>
+                            <input type="number" class="form-input" id="loopPhase" value="3" onchange="updateCalc()">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">📹 CCTV Cameras</div>
+                        <div class="form-group">
+                            <label class="form-label">Number of Locations</label>
+                            <input type="number" class="form-input" id="cctvLocations" value="2">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pedestrian Facilities -->
+            <div class="section-card" id="sec-ped">
+                <div class="section-header"><span class="section-header-icon">🚶</span> Pedestrian Facilities</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Pedestrian Flashers</label>
+                            <input type="number" class="form-input" id="pedFlashers" value="32" onchange="updateCalc()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">HAWK Ped Signals</label>
+                            <input type="number" class="form-input" id="hawkSignals" value="2" onchange="updateCalc()">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">🔘 Pedestrian Push Buttons</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Sets</label>
+                                <input type="number" class="form-input" id="pedPushTotal" value="197">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">At Intersections</label>
+                                <input type="number" class="form-input" id="pedPushIntersections" value="94">
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">📅 Year-by-Year Total Facilities</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Total</label>
+                                <input type="number" class="form-input" id="ped2023" value="28" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Total</label>
+                                <input type="number" class="form-input" id="ped2024" value="32" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Total</label>
+                                <input type="number" class="form-input" id="ped2025" value="34" onchange="updateTrends()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Lighting Infrastructure -->
+            <div class="section-card" id="sec-lighting">
+                <div class="section-header"><span class="section-header-icon">💡</span> Lighting Infrastructure</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Luminaires</label>
+                            <input type="number" class="form-input" id="luminaires" value="398" onchange="updateCalc()">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Street Lighting Sets</label>
+                            <input type="number" class="form-input" id="streetLightSets" value="3">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">☀️ Solar Lighting</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Locations</label>
+                                <input type="number" class="form-input" id="solarLocations" value="17">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Approx. Total Lights</label>
+                                <input type="number" class="form-input" id="solarLights" value="50">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Traffic Calming Program (Full Width) -->
+            <div class="section-card full-width" id="sec-calming">
+                <div class="section-header"><span class="section-header-icon">🛑</span> Traffic Calming Program</div>
+                <div class="section-body">
+                    <div class="tc-grid">
+                        <div>
+                            <div class="sub-section">
+                                <div class="sub-title">📊 By District</div>
+                                <div class="district-grid">
+                                    <div class="form-group">
+                                        <label class="form-label">Brookland</label>
+                                        <input type="number" class="form-input" id="brookland" value="106" onchange="updateDistrictTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Fairfield</label>
+                                        <input type="number" class="form-input" id="fairfield" value="91" onchange="updateDistrictTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Three Chopt</label>
+                                        <input type="number" class="form-input" id="threeChopt" value="115" onchange="updateDistrictTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Tuckahoe</label>
+                                        <input type="number" class="form-input" id="tuckahoe" value="137" onchange="updateDistrictTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label">Varina</label>
+                                        <input type="number" class="form-input" id="varina" value="90" onchange="updateDistrictTotal()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label" style="font-weight:700;color:var(--navy)">District Total</label>
+                                        <div style="font-size:1.4rem;font-weight:800;color:var(--navy);padding:0.3rem 0" id="districtTotal">539</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="sub-section">
+                                <div class="sub-title">📅 Year-by-Year Data</div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label class="form-label year-label-1">2023 Total</label>
+                                        <input type="number" class="form-input" id="tc2023" value="480" onchange="updateTrends()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label year-label-2">2024 Total</label>
+                                        <input type="number" class="form-input" id="tc2024" value="520" onchange="updateTrends()">
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="form-label year-label-3">2025 Total</label>
+                                        <input type="number" class="form-input" id="tc2025" value="539" onchange="updateTrends()">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bike Lane & Guardrail -->
+            <div class="section-card" id="sec-bike">
+                <div class="section-header"><span class="section-header-icon">🚴</span> Bike Lane & Guardrail</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Number of Bike Lane Projects</label>
+                            <input type="number" class="form-input" id="bikeLaneProjects" value="12">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Bike Lane Miles</label>
+                            <input type="number" step="0.01" class="form-input" id="bikeLaneMiles" value="60.05" onchange="updateCalc()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Guardrail Total Number Maintained</label>
+                        <input type="number" class="form-input" id="guardrailMaintained" value="916" onchange="updateGuardrail()">
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">📅 Year-by-Year Bike Lane Miles</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Miles</label>
+                                <input type="number" step="0.01" class="form-input" id="bike2023" value="5.12" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Miles</label>
+                                <input type="number" step="0.01" class="form-input" id="bike2024" value="20.97" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Miles</label>
+                                <input type="number" step="0.01" class="form-input" id="bike2025" value="6.66" onchange="updateTrends()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Plan Review Statistics -->
+            <div class="section-card" id="sec-planreview">
+                <div class="section-header"><span class="section-header-icon">📋</span> Plan Review Statistics</div>
+                <div class="section-body">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Total Reviews</label>
+                            <input type="number" class="form-input" id="totalReviews" value="716">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">POD Reviews</label>
+                            <input type="number" class="form-input" id="podReviews" value="546">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Subdivision Reviews</label>
+                            <input type="number" class="form-input" id="subdivisionReviews" value="170">
+                        </div>
+                    </div>
+                    <hr class="section-divider">
+                    <div class="sub-section">
+                        <div class="sub-title">📅 Year-by-Year Comparison</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label year-label-1">2023 Reviews</label>
+                                <input type="number" class="form-input" id="pr2023" value="650" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-2">2024 Reviews</label>
+                                <input type="number" class="form-input" id="pr2024" value="716" onchange="updateTrends()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label year-label-3">2025 Reviews</label>
+                                <input type="number" class="form-input" id="pr2025" value="780" onchange="updateTrends()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Staff & Fleet (Full Width) -->
+            <div class="section-card full-width" id="sec-staff">
+                <div class="section-header"><span class="section-header-icon">👥</span> Staff & Fleet</div>
+                <div class="section-body">
+                    <div class="sub-section">
+                        <div class="sub-title">👤 Total Staffing</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Staff</label>
+                                <input type="number" class="form-input" id="totalStaff" value="38" onchange="updateStaffCalc()">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Vacancies</label>
+                                <input type="number" class="form-input" id="vacancies" value="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr class="section-divider">
+
+                    <div class="sub-section">
+                        <div class="sub-title">📊 Maintenance and Operation Breakdown</div>
+                        <div class="table-wrap">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Position</th>
+                                        <th>Engineering Study</th>
+                                        <th>Eng</th>
+                                        <th>Signal</th>
+                                        <th>Signal Drawing</th>
+                                        <th>Sign</th>
+                                        <th>Marking</th>
+                                        <th>Sign & Marking</th>
+                                        <th>Row Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="pos-label">Eng</td>
+                                        <td><input type="number" class="tbl-input" id="eng_engStudy" value="2" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_eng" value="2" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_signal" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_signalDraw" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_sign" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_marking" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="eng_signMarking" value="0" onchange="updateStaffCalc()"></td>
+                                        <td class="row-total" id="engRowTotal">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pos-label">Shop Manager</td>
+                                        <td><input type="number" class="tbl-input" id="mgr_engStudy" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_eng" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_signal" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_signalDraw" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_sign" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_marking" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="mgr_signMarking" value="1" onchange="updateStaffCalc()"></td>
+                                        <td class="row-total" id="mgrRowTotal">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pos-label">Supervisor</td>
+                                        <td><input type="number" class="tbl-input" id="sup_engStudy" value="1" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_eng" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_signal" value="1" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_signalDraw" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_sign" value="1" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_marking" value="1" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="sup_signMarking" value="0" onchange="updateStaffCalc()"></td>
+                                        <td class="row-total" id="supRowTotal">4</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="pos-label">Tech</td>
+                                        <td><input type="number" class="tbl-input" id="tech_engStudy" value="4" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_eng" value="0" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_signal" value="7" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_signalDraw" value="1" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_sign" value="7" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_marking" value="9" onchange="updateStaffCalc()"></td>
+                                        <td><input type="number" class="tbl-input" id="tech_signMarking" value="0" onchange="updateStaffCalc()"></td>
+                                        <td class="row-total" id="techRowTotal">28</td>
+                                    </tr>
+                                </tbody>
+                                <tfoot>
+                                    <tr class="total-row">
+                                        <td class="pos-label"><strong>Column Total</strong></td>
+                                        <td class="col-total" id="engStudyTotal">7</td>
+                                        <td class="col-total" id="engTotal">2</td>
+                                        <td class="col-total" id="signalTotal">8</td>
+                                        <td class="col-total" id="signalDrawTotal">1</td>
+                                        <td class="col-total" id="signTotal">8</td>
+                                        <td class="col-total" id="markingTotal">10</td>
+                                        <td class="col-total" id="signMarkingTotal">1</td>
+                                        <td class="grand-total" id="grandTotal">37</td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+
+                    <hr class="section-divider">
+
+                    <div class="sub-section">
+                        <div class="sub-title">🚛 Fleet</div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Engineering Vehicles</label>
+                                <input type="number" class="form-input" id="engVehicles" value="7">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Signal Vehicles</label>
+                                <input type="number" class="form-input" id="signalVehicles" value="7">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Sign Vehicles</label>
+                                <input type="number" class="form-input" id="signVehicles" value="12">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label class="form-label">Total Trucks</label>
+                                <input type="number" class="form-input" id="totalTrucks" value="26">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Leased</label>
+                                <input type="number" class="form-input" id="leasedVehicles" value="15">
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">Owned</label>
+                                <input type="number" class="form-input" id="ownedVehicles" value="7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Sections Container -->
+        <div id="customSectionsContainer"></div>
+
+        <!-- ═══════════ CHARTS DASHBOARD ═══════════ -->
+        <div class="charts-section-title" id="chartsDashboardTitle">📊 Infrastructure Overview Dashboard</div>
+
+        <!-- Overview Charts -->
+        <div class="chart-grid">
+            <div class="chart-card">
+                <div class="chart-title">🎯 Infrastructure Distribution</div>
+                <div class="chart-box"><canvas id="chartInfraOverview"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🚦 Signal Infrastructure</div>
+                <div class="chart-box"><canvas id="chartSignal"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📡 Detection Systems</div>
+                <div class="chart-box"><canvas id="chartDetection"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">🛑 Traffic Calming by District</div>
+                <div class="chart-box"><canvas id="chartDistrict"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Trend Charts -->
+        <div class="charts-section-title">📈 Year-by-Year Trends</div>
+        <div class="chart-grid" id="trendChartsGrid">
+            <div class="chart-card">
+                <div class="chart-title">📈 Signal Infrastructure Trend</div>
+                <div class="chart-box"><canvas id="chartSignalTrend"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📈 Traffic Calming Trend</div>
+                <div class="chart-box"><canvas id="chartTcTrend"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📈 Plan Review Trend</div>
+                <div class="chart-box"><canvas id="chartPrTrend"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📈 Pedestrian Facilities Trend</div>
+                <div class="chart-box"><canvas id="chartPedTrend"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">📈 Bike Lane Miles Trend</div>
+                <div class="chart-box"><canvas id="chartBikeTrend"></canvas></div>
+            </div>
+            <div class="chart-card">
+                <div class="chart-title">👥 Staff Distribution</div>
+                <div class="chart-box"><canvas id="chartStaff"></canvas></div>
+            </div>
+        </div>
+
+        <!-- Dynamic Custom Charts Container -->
+        <div id="customChartsContainer"></div>
+
+        <!-- Notes -->
+        <div class="section-card" style="margin-top:1rem">
+            <div class="section-header"><span class="section-header-icon">📝</span> Notes & Remarks</div>
+            <div class="section-body">
+                <textarea class="notes-area" id="notes" placeholder="Enter any additional notes, observations, or action items here..."></textarea>
+            </div>
+        </div>
+    </main>
+
+    <!-- Print Footer -->
+    <div class="print-footer-el">Traffic Engineering Division &bull; Henrico County Department of Public Works &bull; Confidential</div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+    <!-- PDF Generation Overlay -->
+    <div class="pdf-overlay" id="pdfOverlay">
+        <div class="pdf-progress">
+            <div class="pdf-spinner"></div>
+            <h3>Generating Professional PDF...</h3>
+            <p>Please wait while we prepare your document.</p>
+        </div>
+    </div>
+
+    <!-- Add Section Modal -->
+    <div class="modal-overlay" id="addSectionModal">
+        <div class="modal-box">
+            <div class="modal-head">
+                <h2>➕ Add New Section</h2>
+                <button class="modal-close" onclick="closeAddSectionModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-field">
+                    <label>Section Name</label>
+                    <input type="text" id="newSectionName" placeholder="e.g., Work Orders, School Zones">
+                </div>
+                <div class="modal-field">
+                    <label>Section Icon (emoji)</label>
+                    <input type="text" id="newSectionIcon" placeholder="e.g., 📌, 🏫, 🔧" value="📌" maxlength="4">
+                </div>
+                <div class="modal-field">
+                    <label>Fields</label>
+                    <div class="modal-fields-list" id="newFieldsList">
+                        <div class="modal-field-row">
+                            <input type="text" placeholder="Field name" class="new-field-name" value="">
+                            <select class="new-field-type" style="width:100px;padding:0.4rem;border:1.5px solid var(--gray-300);border-radius:6px;font-size:0.82rem">
+                                <option value="number">Number</option>
+                                <option value="text">Text</option>
+                            </select>
+                            <button class="btn-remove-field" onclick="this.parentElement.remove()" title="Remove">−</button>
+                        </div>
+                    </div>
+                    <button onclick="addFieldRow()" style="background:var(--green-light);color:white;border:none;padding:0.4rem 0.8rem;border-radius:6px;font-size:0.78rem;cursor:pointer;font-family:inherit;font-weight:600">+ Add Field</button>
+                </div>
+                <div class="modal-field">
+                    <label><input type="checkbox" id="newSectionYearData" checked> Include Year-by-Year data fields</label>
+                </div>
+                <div class="modal-actions">
+                    <button class="modal-btn modal-btn-cancel" onclick="closeAddSectionModal()">Cancel</button>
+                    <button class="modal-btn modal-btn-primary" onclick="createCustomSection()">Create Section</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    /* ═══════════════════════════════════════════════════
+       INDEXEDDB STORAGE ENGINE
+       ═══════════════════════════════════════════════════ */
+    const DB_NAME = 'HenricoTrafficEngDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'inventoryData';
+
+    function openDB() {
+        return new Promise((resolve, reject) => {
+            const req = indexedDB.open(DB_NAME, DB_VERSION);
+            req.onupgradeneeded = (e) => {
+                const db = e.target.result;
+                if (!db.objectStoreNames.contains(STORE_NAME)) {
+                    db.createObjectStore(STORE_NAME);
+                }
+            };
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function dbGet(key) {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.get(key);
+            req.onsuccess = () => resolve(req.result);
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function dbSet(key, value) {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.put(value, key);
+            req.onsuccess = () => resolve();
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    async function dbDelete(key) {
+        const db = await openDB();
+        return new Promise((resolve, reject) => {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            const req = store.delete(key);
+            req.onsuccess = () => resolve();
+            req.onerror = () => reject(req.error);
+        });
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CHART INSTANCES & COLORS
+       ═══════════════════════════════════════════════════ */
+    let charts = {};
+    const COLORS = ['#3182ce','#38a169','#d69e2e','#805ad5','#e53e3e','#319795','#718096','#d53f8c','#dd6b20','#667eea'];
+    const COLORS_ALPHA = COLORS.map(c => c + '18');
+
+    /* ═══════════════════════════════════════════════════
+       CUSTOM SECTIONS REGISTRY
+       ═══════════════════════════════════════════════════ */
+    let customSections = [];
+
+    /* ═══════════════════════════════════════════════════
+       UTILITY FUNCTIONS
+       ═══════════════════════════════════════════════════ */
+    const gv = (id) => { const el = document.getElementById(id); return el ? (parseFloat(el.value) || 0) : 0; };
+    const gt = (id) => { const el = document.getElementById(id); return el ? (parseFloat(el.textContent) || 0) : 0; };
+
+    function showToast(msg) {
+        const t = document.getElementById('toast');
+        t.textContent = msg;
+        t.classList.add('show');
+        setTimeout(() => t.classList.remove('show'), 3000);
+    }
+
+    function scrollToSection(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            el.style.boxShadow = '0 0 0 3px rgba(49,130,206,0.4)';
+            setTimeout(() => el.style.boxShadow = '', 2000);
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CALCULATIONS
+       ═══════════════════════════════════════════════════ */
+    function updateCalc() {
+        document.getElementById('totalSignals').textContent = gv('mastArm') + gv('spanWire');
+        document.getElementById('totalDetection').textContent = gv('loopDetection') + gv('videoDetection') + gv('loopPhase');
+        document.getElementById('totalPed').textContent = gv('pedFlashers') + gv('hawkSignals');
+        document.getElementById('totalLuminaires').textContent = gv('luminaires');
+        document.getElementById('totalBikeLanes').textContent = gv('bikeLaneMiles');
+        updateAllCharts();
+    }
+
+    function updateDistrictTotal() {
+        const total = gv('brookland') + gv('fairfield') + gv('threeChopt') + gv('tuckahoe') + gv('varina');
+        document.getElementById('districtTotal').textContent = total;
+        document.getElementById('totalSpeedCushions').textContent = total;
+        updateAllCharts();
+    }
+
+    function updateGuardrail() {
+        document.getElementById('totalGuardrail').textContent = gv('guardrailMaintained');
+        updateAllCharts();
+    }
+
+    function updateStaffCalc() {
+        const positions = ['eng','mgr','sup','tech'];
+        const depts = ['engStudy','eng','signal','signalDraw','sign','marking','signMarking'];
+        positions.forEach(p => {
+            let rt = 0;
+            depts.forEach(d => { rt += parseInt(document.getElementById(`${p}_${d}`)?.value) || 0; });
+            document.getElementById(`${p}RowTotal`).textContent = rt;
+        });
+        let grand = 0;
+        depts.forEach(d => {
+            let ct = 0;
+            positions.forEach(p => { ct += parseInt(document.getElementById(`${p}_${d}`)?.value) || 0; });
+            document.getElementById(`${d}Total`).textContent = ct;
+            grand += ct;
+        });
+        document.getElementById('grandTotal').textContent = grand;
+        updateAllCharts();
+    }
+
+    function updateTrends() { updateAllCharts(); }
+
+    /* ═══════════════════════════════════════════════════
+       YEAR LABELS
+       ═══════════════════════════════════════════════════ */
+    function updateYearLabels() {
+        const y1 = document.getElementById('reportYear1').value;
+        const y2 = document.getElementById('reportYear2').value;
+        const y3 = document.getElementById('reportYear3').value;
+        document.querySelectorAll('.year-label-1').forEach(l => { l.textContent = y1 + ' ' + l.textContent.replace(/^\d{4}\s*/, ''); });
+        document.querySelectorAll('.year-label-2').forEach(l => { l.textContent = y2 + ' ' + l.textContent.replace(/^\d{4}\s*/, ''); });
+        document.querySelectorAll('.year-label-3').forEach(l => { l.textContent = y3 + ' ' + l.textContent.replace(/^\d{4}\s*/, ''); });
+        updateAllCharts();
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CHART INITIALIZATION & UPDATE
+       ═══════════════════════════════════════════════════ */
+    function getYears() {
+        return [
+            document.getElementById('reportYear1')?.value || '2023',
+            document.getElementById('reportYear2')?.value || '2024',
+            document.getElementById('reportYear3')?.value || '2025'
+        ];
+    }
+
+    function makeLineOpts(label, color) {
+        return {
+            label, borderColor: color, backgroundColor: color + '15',
+            borderWidth: 2.5, fill: true, tension: 0.35,
+            pointBackgroundColor: color, pointBorderColor: '#fff', pointBorderWidth: 2, pointRadius: 5
+        };
+    }
+
+    function initCharts() {
+        const yrs = getYears();
+        try {
+            // Infrastructure Overview
+            charts.infraOverview = new Chart(document.getElementById('chartInfraOverview'), {
+                type: 'doughnut',
+                data: {
+                    labels: ['Signals','Detection','Ped','Luminaires','Speed Cushions','Bike Miles×10','Guardrail'],
+                    datasets: [{ data: [gt('totalSignals'),gt('totalDetection'),gt('totalPed'),gt('totalLuminaires'),gt('totalSpeedCushions'),gv('bikeLaneMiles')*10,gt('totalGuardrail')], backgroundColor: COLORS.slice(0,7), borderWidth: 2, borderColor: '#fff' }]
+                },
+                options: { responsive: true, maintainAspectRatio: false, cutout: '55%', plugins: { legend: { position: 'right', labels: { font: { size: 11 }, padding: 12 } } } }
+            });
+
+            // Signal
+            charts.signal = new Chart(document.getElementById('chartSignal'), {
+                type: 'doughnut',
+                data: { labels: ['Mast Arm','Span Wire','FYA'], datasets: [{ data: [gv('mastArm'),gv('spanWire'),gv('fya')], backgroundColor: COLORS.slice(0,3), borderWidth: 2, borderColor: '#fff' }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+            });
+
+            // Detection
+            charts.detection = new Chart(document.getElementById('chartDetection'), {
+                type: 'bar',
+                data: { labels: ['Loop','Video','Loop Phase'], datasets: [{ label: 'Count', data: [gv('loopDetection'),gv('videoDetection'),gv('loopPhase')], backgroundColor: COLORS.slice(0,3), borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+
+            // District
+            charts.district = new Chart(document.getElementById('chartDistrict'), {
+                type: 'bar',
+                data: { labels: ['Brookland','Fairfield','Three Chopt','Tuckahoe','Varina'], datasets: [{ label: 'Streets', data: [gv('brookland'),gv('fairfield'),gv('threeChopt'),gv('tuckahoe'),gv('varina')], backgroundColor: '#3182ce', borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, indexAxis: 'y', plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true } } }
+            });
+
+            // Trend charts
+            charts.signalTrend = new Chart(document.getElementById('chartSignalTrend'), { type: 'line', data: { labels: yrs, datasets: [{ ...makeLineOpts('Total Signals','#3182ce'), data: [gv('signal2023'),gv('signal2024'),gv('signal2025')] }] }, options: trendOpts('Signals') });
+            charts.tcTrend = new Chart(document.getElementById('chartTcTrend'), { type: 'line', data: { labels: yrs, datasets: [{ ...makeLineOpts('Traffic Calming','#e53e3e'), data: [gv('tc2023'),gv('tc2024'),gv('tc2025')] }] }, options: trendOpts('Streets') });
+            charts.prTrend = new Chart(document.getElementById('chartPrTrend'), { type: 'line', data: { labels: yrs, datasets: [{ ...makeLineOpts('Plan Reviews','#3182ce'), data: [gv('pr2023'),gv('pr2024'),gv('pr2025')] }] }, options: trendOpts('Reviews') });
+            charts.pedTrend = new Chart(document.getElementById('chartPedTrend'), { type: 'line', data: { labels: yrs, datasets: [{ ...makeLineOpts('Ped Facilities','#d69e2e'), data: [gv('ped2023'),gv('ped2024'),gv('ped2025')] }] }, options: trendOpts('Facilities') });
+            charts.bikeTrend = new Chart(document.getElementById('chartBikeTrend'), { type: 'line', data: { labels: yrs, datasets: [{ ...makeLineOpts('Bike Lane Miles','#319795'), data: [gv('bike2023'),gv('bike2024'),gv('bike2025')] }] }, options: trendOpts('Miles') });
+
+            // Staff
+            charts.staff = new Chart(document.getElementById('chartStaff'), {
+                type: 'bar',
+                data: { labels: ['Eng Study','Eng','Signal','Signal Draw','Sign','Marking','Sign & Mark'], datasets: [{ label: 'Staff', data: [gt('engStudyTotal'),gt('engTotal'),gt('signalTotal'),gt('signalDrawTotal'),gt('signTotal'),gt('markingTotal'),gt('signMarkingTotal')], backgroundColor: COLORS.slice(0,7), borderRadius: 6 }] },
+                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+            });
+        } catch (e) { console.error('Chart init error:', e); }
+    }
+
+    function trendOpts(yLabel) {
+        return {
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { display: true, position: 'top' } },
+            scales: { y: { beginAtZero: false, title: { display: true, text: yLabel } }, x: { title: { display: true, text: 'Year' } } }
+        };
+    }
+
+    function updateAllCharts() {
+        const yrs = getYears();
+        if (charts.infraOverview) { charts.infraOverview.data.datasets[0].data = [gt('totalSignals'),gt('totalDetection'),gt('totalPed'),gt('totalLuminaires'),gt('totalSpeedCushions'),gv('bikeLaneMiles')*10,gt('totalGuardrail')]; charts.infraOverview.update(); }
+        if (charts.signal) { charts.signal.data.datasets[0].data = [gv('mastArm'),gv('spanWire'),gv('fya')]; charts.signal.update(); }
+        if (charts.detection) { charts.detection.data.datasets[0].data = [gv('loopDetection'),gv('videoDetection'),gv('loopPhase')]; charts.detection.update(); }
+        if (charts.district) { charts.district.data.datasets[0].data = [gv('brookland'),gv('fairfield'),gv('threeChopt'),gv('tuckahoe'),gv('varina')]; charts.district.update(); }
+        if (charts.staff) { charts.staff.data.datasets[0].data = [gt('engStudyTotal'),gt('engTotal'),gt('signalTotal'),gt('signalDrawTotal'),gt('signTotal'),gt('markingTotal'),gt('signMarkingTotal')]; charts.staff.update(); }
+        // Trends
+        if (charts.signalTrend) { charts.signalTrend.data.labels = yrs; charts.signalTrend.data.datasets[0].data = [gv('signal2023'),gv('signal2024'),gv('signal2025')]; charts.signalTrend.update(); }
+        if (charts.tcTrend) { charts.tcTrend.data.labels = yrs; charts.tcTrend.data.datasets[0].data = [gv('tc2023'),gv('tc2024'),gv('tc2025')]; charts.tcTrend.update(); }
+        if (charts.prTrend) { charts.prTrend.data.labels = yrs; charts.prTrend.data.datasets[0].data = [gv('pr2023'),gv('pr2024'),gv('pr2025')]; charts.prTrend.update(); }
+        if (charts.pedTrend) { charts.pedTrend.data.labels = yrs; charts.pedTrend.data.datasets[0].data = [gv('ped2023'),gv('ped2024'),gv('ped2025')]; charts.pedTrend.update(); }
+        if (charts.bikeTrend) { charts.bikeTrend.data.labels = yrs; charts.bikeTrend.data.datasets[0].data = [gv('bike2023'),gv('bike2024'),gv('bike2025')]; charts.bikeTrend.update(); }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       SAVE / LOAD DATA (IndexedDB)
+       ═══════════════════════════════════════════════════ */
+    function collectFormData() {
+        const data = {};
+        document.querySelectorAll('.form-input, .tbl-input, .notes-area, .year-input').forEach(el => {
+            if (el.id) data[el.id] = el.value;
+        });
+        // Also collect custom section inputs
+        document.querySelectorAll('.custom-field-input').forEach(el => {
+            if (el.id) data[el.id] = el.value;
+        });
+        return data;
+    }
+
+    function applyFormData(data) {
+        if (!data) return;
+        Object.keys(data).forEach(key => {
+            const el = document.getElementById(key);
+            if (el) el.value = data[key];
+        });
+    }
+
+    async function saveData() {
+        try {
+            const data = collectFormData();
+            data._lastUpdated = new Date().toISOString();
+            data._customSections = JSON.stringify(customSections);
+            await dbSet('currentData', data);
+            // Also save to localStorage as fallback
+            try { localStorage.setItem('henrico_traffic_inv', JSON.stringify(data)); } catch(e) {}
+            const ts = new Date().toLocaleString();
+            document.getElementById('lastUpdated').textContent = ts;
+            showToast('✅ Data saved successfully');
+        } catch (e) {
+            console.error('Save error:', e);
+            // Fallback to localStorage
+            const data = collectFormData();
+            data._lastUpdated = new Date().toISOString();
+            data._customSections = JSON.stringify(customSections);
+            localStorage.setItem('henrico_traffic_inv', JSON.stringify(data));
+            document.getElementById('lastUpdated').textContent = new Date().toLocaleString();
+            showToast('✅ Data saved (localStorage fallback)');
+        }
+    }
+
+    async function loadData() {
+        try {
+            let data = await dbGet('currentData');
+            if (!data) {
+                const ls = localStorage.getItem('henrico_traffic_inv');
+                if (ls) data = JSON.parse(ls);
+            }
+            if (data) {
+                // Restore custom sections first
+                if (data._customSections) {
+                    try {
+                        customSections = JSON.parse(data._customSections);
+                        customSections.forEach(sec => renderCustomSection(sec));
+                    } catch(e) {}
+                }
+                applyFormData(data);
+                if (data._lastUpdated) {
+                    document.getElementById('lastUpdated').textContent = new Date(data._lastUpdated).toLocaleString();
+                }
+            }
+        } catch (e) {
+            console.error('Load error:', e);
+            const ls = localStorage.getItem('henrico_traffic_inv');
+            if (ls) {
+                const data = JSON.parse(ls);
+                applyFormData(data);
+                if (data._lastUpdated) document.getElementById('lastUpdated').textContent = new Date(data._lastUpdated).toLocaleString();
+            }
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CUSTOM SECTION MANAGEMENT
+       ═══════════════════════════════════════════════════ */
+    function openAddSectionModal() {
+        document.getElementById('addSectionModal').classList.add('show');
+        document.getElementById('newSectionName').value = '';
+        document.getElementById('newSectionIcon').value = '📌';
+        document.getElementById('newFieldsList').innerHTML = `
+            <div class="modal-field-row">
+                <input type="text" placeholder="Field name" class="new-field-name">
+                <select class="new-field-type" style="width:100px;padding:0.4rem;border:1.5px solid var(--gray-300);border-radius:6px;font-size:0.82rem"><option value="number">Number</option><option value="text">Text</option></select>
+                <button class="btn-remove-field" onclick="this.parentElement.remove()" title="Remove">−</button>
+            </div>`;
+        document.getElementById('newSectionYearData').checked = true;
+    }
+    function closeAddSectionModal() { document.getElementById('addSectionModal').classList.remove('show'); }
+
+    function addFieldRow() {
+        const list = document.getElementById('newFieldsList');
+        const row = document.createElement('div');
+        row.className = 'modal-field-row';
+        row.innerHTML = `
+            <input type="text" placeholder="Field name" class="new-field-name">
+            <select class="new-field-type" style="width:100px;padding:0.4rem;border:1.5px solid var(--gray-300);border-radius:6px;font-size:0.82rem"><option value="number">Number</option><option value="text">Text</option></select>
+            <button class="btn-remove-field" onclick="this.parentElement.remove()" title="Remove">−</button>`;
+        list.appendChild(row);
+    }
+
+    function createCustomSection() {
+        const name = document.getElementById('newSectionName').value.trim();
+        if (!name) { alert('Please enter a section name.'); return; }
+        const icon = document.getElementById('newSectionIcon').value || '📌';
+        const includeYears = document.getElementById('newSectionYearData').checked;
+        const fields = [];
+        document.querySelectorAll('#newFieldsList .modal-field-row').forEach(row => {
+            const fname = row.querySelector('.new-field-name').value.trim();
+            const ftype = row.querySelector('.new-field-type').value;
+            if (fname) fields.push({ name: fname, type: ftype });
+        });
+        if (fields.length === 0) { alert('Please add at least one field.'); return; }
+
+        const sectionId = 'cs_' + Date.now();
+        const section = { id: sectionId, name, icon, fields, includeYears };
+        customSections.push(section);
+        renderCustomSection(section);
+        closeAddSectionModal();
+        showToast(`Section "${name}" added`);
+        saveData();
+    }
+
+    function renderCustomSection(section) {
+        const container = document.getElementById('customSectionsContainer');
+        const card = document.createElement('div');
+        card.className = 'section-card';
+        card.id = section.id;
+        card.style.marginBottom = '1.25rem';
+
+        let fieldsHTML = '<div class="form-row">';
+        section.fields.forEach((f, i) => {
+            const fid = `${section.id}_f${i}`;
+            fieldsHTML += `<div class="form-group"><label class="form-label">${f.name}</label><input type="${f.type}" class="form-input custom-field-input" id="${fid}" value="0" onchange="updateAllCharts()"></div>`;
+        });
+        fieldsHTML += '</div>';
+
+        let yearHTML = '';
+        if (section.includeYears) {
+            const y1 = document.getElementById('reportYear1')?.value || '2023';
+            const y2 = document.getElementById('reportYear2')?.value || '2024';
+            const y3 = document.getElementById('reportYear3')?.value || '2025';
+            yearHTML = `<hr class="section-divider"><div class="sub-section"><div class="sub-title">📅 Year-by-Year Data</div><div class="form-row">
+                <div class="form-group"><label class="form-label year-label-1">${y1} Total</label><input type="number" class="form-input custom-field-input" id="${section.id}_yr1" value="0" onchange="updateAllCharts()"></div>
+                <div class="form-group"><label class="form-label year-label-2">${y2} Total</label><input type="number" class="form-input custom-field-input" id="${section.id}_yr2" value="0" onchange="updateAllCharts()"></div>
+                <div class="form-group"><label class="form-label year-label-3">${y3} Total</label><input type="number" class="form-input custom-field-input" id="${section.id}_yr3" value="0" onchange="updateAllCharts()"></div>
+            </div></div>`;
+        }
+
+        card.innerHTML = `
+            <div class="section-header"><span class="section-header-icon">${section.icon}</span> ${section.name}
+                <span style="margin-left:auto;font-size:0.7rem;opacity:0.7;cursor:pointer" onclick="removeCustomSection('${section.id}')" title="Remove section">✕ Remove</span>
+            </div>
+            <div class="section-body">${fieldsHTML}${yearHTML}</div>`;
+        container.appendChild(card);
+
+        // Add trend chart if year data included
+        if (section.includeYears) {
+            const chartContainer = document.getElementById('customChartsContainer');
+            const chartCard = document.createElement('div');
+            chartCard.className = 'chart-card';
+            chartCard.id = `${section.id}_chartCard`;
+            chartCard.style.marginBottom = '1rem';
+            chartCard.innerHTML = `<div class="chart-title">📈 ${section.name} Trend</div><div class="chart-box"><canvas id="${section.id}_chart"></canvas></div>`;
+            chartContainer.appendChild(chartCard);
+
+            const yrs = getYears();
+            const color = COLORS[customSections.length % COLORS.length];
+            charts[section.id] = new Chart(document.getElementById(`${section.id}_chart`), {
+                type: 'line',
+                data: { labels: yrs, datasets: [{ ...makeLineOpts(section.name, color), data: [0,0,0] }] },
+                options: trendOpts('Value')
+            });
+        }
+    }
+
+    function removeCustomSection(id) {
+        if (!confirm('Remove this custom section?')) return;
+        document.getElementById(id)?.remove();
+        document.getElementById(`${id}_chartCard`)?.remove();
+        if (charts[id]) { charts[id].destroy(); delete charts[id]; }
+        customSections = customSections.filter(s => s.id !== id);
+        saveData();
+        showToast('Section removed');
+    }
+
+    /* ═══════════════════════════════════════════════════
+       RESET / CLEAR
+       ═══════════════════════════════════════════════════ */
+    function resetToDefault() {
+        if (confirm('Reset all values to defaults? This cannot be undone.')) {
+            dbDelete('currentData').catch(()=>{});
+            localStorage.removeItem('henrico_traffic_inv');
+            location.reload();
+        }
+    }
+
+    function clearAll() {
+        if (confirm('Clear ALL data to zero?')) {
+            document.querySelectorAll('.form-input[type="number"], .tbl-input, .custom-field-input[type="number"]').forEach(el => el.value = 0);
+            document.querySelectorAll('.form-input[type="text"]').forEach(el => { if (el.id !== 'batteryBackup') el.value = ''; });
+            document.getElementById('notes').value = '';
+            updateCalc(); updateStaffCalc(); updateDistrictTotal(); updateGuardrail();
+            showToast('All data cleared');
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PRINT
+       ═══════════════════════════════════════════════════ */
+    function printReport() {
+        updateAllCharts();
+        setTimeout(() => window.print(), 400);
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PDF DOWNLOAD (html2canvas + jsPDF) — IMPROVED
+       ═══════════════════════════════════════════════════ */
+    async function downloadPDF() {
+        const overlay = document.getElementById('pdfOverlay');
+        overlay.classList.add('show');
+        try {
+            document.getElementById('fabBar').style.display = 'none';
+            const toastEl = document.getElementById('toast');
+            toastEl.classList.remove('show');
+            toastEl.style.display = 'none';
+
+            // Check if notes is empty — if so, collapse it for PDF
+            const notesEl = document.getElementById('notes');
+            const notesSection = notesEl ? notesEl.closest('.section-card') : null;
+            const notesWasEmpty = notesEl && !notesEl.value.trim();
+
+            const canvas = await html2canvas(document.body, {
+                scale: 2, useCORS: true, logging: false, backgroundColor: '#f3f4f6', windowWidth: 1440,
+                onclone: (doc) => {
+                    const f = doc.getElementById('fabBar'); if(f) f.style.display='none';
+                    const o = doc.getElementById('pdfOverlay'); if(o) o.style.display='none';
+                    const t = doc.getElementById('toast'); if(t) t.style.display='none';
+                    // Hide empty notes section in PDF
+                    const clonedNotes = doc.getElementById('notes');
+                    if (clonedNotes && !clonedNotes.value.trim()) {
+                        const sec = clonedNotes.closest('.section-card');
+                        if (sec) sec.style.display = 'none';
+                    }
+                    // Collapse any whitespace after content
+                    const main = doc.getElementById('mainContent');
+                    if (main) main.style.paddingBottom = '0.5rem';
+                }
+            });
+
+            const { jsPDF } = window.jspdf;
+            const pdf = new jsPDF('p','mm','a4');
+            const pW = 210, pH = 297, footerH = 12;
+            const usableH = pH - footerH;
+            const imgW = pW;
+            const imgH = (canvas.height * imgW) / canvas.width;
+            let pos = 0, page = 1;
+
+            while (pos < imgH) {
+                if (page > 1) pdf.addPage();
+                const sliceH = Math.min(usableH, imgH - pos);
+                if (sliceH < 5 && page > 1) break;
+                const srcY = (pos / imgH) * canvas.height;
+                const srcH = (sliceH / imgH) * canvas.height;
+                const tmp = document.createElement('canvas');
+                tmp.width = canvas.width; tmp.height = Math.max(1, Math.round(srcH));
+                tmp.getContext('2d').drawImage(canvas, 0, Math.round(srcY), canvas.width, Math.round(srcH), 0, 0, canvas.width, Math.round(srcH));
+                pdf.addImage(tmp.toDataURL('image/jpeg', 0.92), 'JPEG', 0, 0, imgW, sliceH);
+                pos += usableH; page++;
+            }
+
+            // Footer on every page — draw white mask FIRST to cover any bleed
+            const tp = pdf.getNumberOfPages();
+            for (let i = 1; i <= tp; i++) {
+                pdf.setPage(i);
+                // White mask over footer zone
+                pdf.setFillColor(255, 255, 255);
+                pdf.rect(0, pH - footerH, pW, footerH, 'F');
+                // Separator line
+                pdf.setDrawColor(180); pdf.setLineWidth(0.3);
+                pdf.line(10, pH - footerH + 2, pW - 10, pH - footerH + 2);
+                // Footer text
+                pdf.setFontSize(7); pdf.setTextColor(120);
+                pdf.text('Traffic Engineering Division  |  Henrico County Department of Public Works  |  Confidential', pW / 2, pH - 5, { align: 'center' });
+                pdf.text('Page ' + i + ' of ' + tp, pW - 12, pH - 5, { align: 'right' });
+            }
+
+            pdf.save('Traffic_Engineering_Report_' + new Date().toISOString().slice(0,10) + '.pdf');
+            showToast('PDF downloaded successfully');
+        } catch (e) {
+            console.error('PDF error:', e);
+            showToast('PDF error: ' + e.message);
+        } finally {
+            document.getElementById('fabBar').style.display = '';
+            document.getElementById('toast').style.display = '';
+            overlay.classList.remove('show');
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CAPTURE CHART AS BASE64 IMAGE
+       ═══════════════════════════════════════════════════ */
+    function captureChart(chartKey) {
+        const c = charts[chartKey];
+        if (!c) return null;
+        try { return c.canvas.toDataURL('image/png'); } catch(e) { return null; }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       PPT HELPERS — COLORFUL PROFESSIONAL DESIGN
+       ═══════════════════════════════════════════════════ */
+    function pH(s, px, title, subtitle, navy) {
+        s.addShape(px.ShapeType.rect, {x:0,y:0,w:'100%',h:1.0,fill:{color:navy}});
+        s.addShape(px.ShapeType.rect, {x:0,y:1.0,w:'100%',h:0.05,fill:{color:'3182ce'}});
+        s.addText(title, {x:0.5,y:0.08,w:9,h:0.55,fontSize:22,bold:true,color:'ffffff',fontFace:'Calibri'});
+        if (subtitle) s.addText(subtitle, {x:0.5,y:0.55,w:9,h:0.35,fontSize:10,color:'90cdf4',italic:true,fontFace:'Calibri'});
+    }
+    function pF(s, px, navy) {
+        s.addShape(px.ShapeType.rect, {x:0,y:7.12,w:'100%',h:0.38,fill:{color:navy}});
+        s.addShape(px.ShapeType.rect, {x:0,y:7.08,w:'100%',h:0.04,fill:{color:'3182ce'}});
+        s.addText('Traffic Engineering Division  |  Henrico County Department of Public Works  |  Confidential', {x:0.4,y:7.18,w:12,h:0.25,fontSize:8,color:'aaaaaa',fontFace:'Calibri'});
+    }
+    function kBox(s, px, x, y, w, h, val, label, bg, accent, navy) {
+        s.addShape(px.ShapeType.roundRect, {x,y,w,h,fill:{color:bg},line:{color:accent,width:2},rectRadius:0.1});
+        s.addShape(px.ShapeType.rect, {x,y,w:0.08,h,fill:{color:accent}});
+        s.addText(String(val), {x:x+0.1,y:y+h*0.08,w:w-0.2,h:h*0.52,fontSize:32,bold:true,color:navy,align:'center',fontFace:'Calibri'});
+        s.addText(label, {x:x+0.1,y:y+h*0.58,w:w-0.2,h:h*0.35,fontSize:11,color:'555555',align:'center',fontFace:'Calibri'});
+    }
+    function tc(t,o){return{text:String(t),options:o||{}};}
+    function tH(t,c){return{text:String(t),options:{bold:true,fill:{color:c},color:'ffffff',fontSize:10,fontFace:'Calibri'}};}
+    function tHC(t,c){return{text:String(t),options:{bold:true,fill:{color:c},color:'ffffff',fontSize:10,align:'center',fontFace:'Calibri'}};}
+    function tV(v){return{text:String(v),options:{align:'center',bold:true,fontSize:12}};}
+    function tL(t){return{text:String(t),options:{fontSize:10}};}
+    function tT(t,bg){return{text:String(t),options:{bold:true,fill:{color:bg||'e8f0fe'}}};}
+    function tTV(v,bg){return{text:String(v),options:{align:'center',bold:true,fill:{color:bg||'e8f0fe'},fontSize:14}};}
+
+    /* ═══════════════════════════════════════════════════
+       PPT DOWNLOAD — COLORFUL PROFESSIONAL PRESENTATION
+       ═══════════════════════════════════════════════════ */
+    let _pptBusy = false;
+    async function downloadPPT() {
+        if (_pptBusy) return;
+        _pptBusy = true;
+        try {
+            showToast('Generating presentation...');
+            const px = new PptxGenJS();
+            px.author = 'Traffic Engineering Division';
+            px.title = 'Traffic Engineering Inventory Summary';
+            px.company = 'Henrico County Department of Public Works';
+            px.layout = 'LAYOUT_WIDE';
+
+            const N='0f2540', B='3182ce', BL='63b3ed', G='38a169', GL='68d391';
+            const GO='d69e2e', R='e53e3e', P='805ad5', T='319795';
+            const y1=gv('reportYear1')||2023, y2=gv('reportYear2')||2024, y3=gv('reportYear3')||2025;
+            const upd=document.getElementById('lastUpdated').textContent;
+            const bdr={pt:0.5,color:'dee2e6'};
+
+            // ══════════ 1: TITLE (7.5" slide) ══════════
+            let s = px.addSlide();
+            s.addShape(px.ShapeType.rect, {x:0,y:0,w:'100%',h:'100%',fill:{color:N}});
+            s.addShape(px.ShapeType.rect, {x:0,y:0,w:0.15,h:'100%',fill:{color:B}});
+            s.addShape(px.ShapeType.rect, {x:0.15,y:0,w:0.05,h:'100%',fill:{color:BL}});
+            s.addShape(px.ShapeType.rect, {x:0,y:5.8,w:'100%',h:0.06,fill:{color:B}});
+            s.addShape(px.ShapeType.rect, {x:0,y:5.9,w:5,h:0.04,fill:{color:BL}});
+            s.addShape(px.ShapeType.rect, {x:0,y:5.97,w:3,h:0.03,fill:{color:GO}});
+            s.addText('TRAFFIC ENGINEERING\nDIVISION', {x:0.8,y:1.2,w:9,h:2.2,fontSize:46,bold:true,color:'ffffff',fontFace:'Calibri',lineSpacingMultiple:1.1});
+            s.addText('Inventory Summary Report', {x:0.8,y:3.4,w:8,h:0.6,fontSize:22,color:BL,fontFace:'Calibri'});
+            s.addText('Henrico County Department of Public Works', {x:0.8,y:4.1,w:8,h:0.5,fontSize:15,color:'888888',fontFace:'Calibri'});
+            s.addText('Reporting Period: '+y1+' \u2013 '+y3+'  |  Updated: '+upd, {x:0.8,y:6.1,w:9,h:0.4,fontSize:12,color:'aaaaaa',fontFace:'Calibri'});
+
+            // ══════════ 2: AT A GLANCE (full height) ══════════
+            s = px.addSlide();
+            pH(s, px, 'Infrastructure at a Glance', 'Key performance metrics across all Traffic Engineering assets', N);
+            s.addShape(px.ShapeType.roundRect, {x:0.2,y:1.3,w:12.9,h:2.5,fill:{color:'eef6ff'},rectRadius:0.12});
+            s.addShape(px.ShapeType.roundRect, {x:0.2,y:4.1,w:12.9,h:2.5,fill:{color:'f0fdf4'},rectRadius:0.12});
+            kBox(s,px,0.4,1.5,2.8,2.1,gt('totalSignals'),'Signal\nLocations','f0f9ff',B,N);
+            kBox(s,px,3.5,1.5,2.8,2.1,gt('totalDetection'),'Detection\nSystems','f0fff4',G,N);
+            kBox(s,px,6.6,1.5,2.8,2.1,gt('totalPed'),'Pedestrian\nFacilities','fffbeb',GO,N);
+            kBox(s,px,9.7,1.5,2.8,2.1,gv('luminaires'),'Total\nLuminaires','faf5ff',P,N);
+            kBox(s,px,0.4,4.3,2.8,2.1,gt('totalSpeedCushions'),'Speed\nCushions','fef2f2',R,N);
+            kBox(s,px,3.5,4.3,2.8,2.1,gv('bikeLaneMiles'),'Bike Lane\nMiles','f0fdfa',T,N);
+            kBox(s,px,6.6,4.3,2.8,2.1,gv('guardrailMaintained'),'Guardrail\nMaintained','f8fafc','718096',N);
+            kBox(s,px,9.7,4.3,2.8,2.1,gv('totalStaff'),'Total\nStaff','eef2ff','1a365d',N);
+            pF(s,px,N);
+
+            // ══════════ 3: INFRA DISTRIBUTION ══════════
+            s = px.addSlide();
+            pH(s, px, 'Infrastructure Distribution', 'Asset breakdown across all categories', N);
+            const ch1 = captureChart('infraOverview');
+            if (ch1) s.addImage({data:ch1, x:0.3, y:1.2, w:7.0, h:5.5});
+            const iL = [
+                ['Signal Locations',gt('totalSignals'),B,'eef6ff'],
+                ['Detection Systems',gt('totalDetection'),G,'f0fff4'],
+                ['Ped Facilities',gt('totalPed'),GO,'fffbeb'],
+                ['Luminaires',gv('luminaires'),P,'faf5ff'],
+                ['Speed Cushions',gt('totalSpeedCushions'),R,'fef2f2'],
+                ['Guardrail',gv('guardrailMaintained'),'718096','f8fafc']
+            ];
+            iL.forEach((item,i) => {
+                const iy = 1.4 + i*0.88;
+                s.addShape(px.ShapeType.roundRect, {x:7.8,y:iy,w:4.8,h:0.72,fill:{color:item[3]},line:{color:item[2],width:1},rectRadius:0.08});
+                s.addShape(px.ShapeType.rect, {x:7.8,y:iy,w:0.12,h:0.72,fill:{color:item[2]}});
+                s.addText(item[0], {x:8.1,y:iy,w:2.8,h:0.72,fontSize:12,color:'444444',fontFace:'Calibri',valign:'middle'});
+                s.addText(String(item[1]), {x:11.2,y:iy,w:1.2,h:0.72,fontSize:18,bold:true,color:N,fontFace:'Calibri',align:'right',valign:'middle'});
+            });
+            pF(s,px,N);
+
+            // ══════════ 4: SIGNALS ══════════
+            s = px.addSlide();
+            pH(s, px, 'Signal Infrastructure', 'Mast arm, span wire, and FYA signal inventory', N);
+            const chS = captureChart('signal');
+            if (chS) s.addImage({data:chS, x:0.3, y:1.2, w:6.0, h:4.5});
+            s.addTable([
+                [tH('Category',B), tHC('Count',B)],
+                [tL('Mast Arm Intersections'), tV(gv('mastArm'))],
+                [tL('Span Wire Intersections'), tV(gv('spanWire'))],
+                [tL('FYA (Flashing Yellow Arrow)'), tV(gv('fya'))],
+                [tL('Battery Backup'), tc(document.getElementById('batteryBackup')?.value||'Every intersection',{align:'center',fontSize:10})],
+                [tT('Total Signal Locations','dbeafe'), tTV(gt('totalSignals'),'dbeafe')]
+            ], {x:6.8,y:1.2,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.52,autoPage:false});
+            s.addShape(px.ShapeType.roundRect, {x:6.8,y:4.5,w:5.8,h:1.5,fill:{color:'eef6ff'},line:{color:B,width:1},rectRadius:0.1});
+            s.addText('Year-by-Year Signal Growth', {x:7.0,y:4.6,w:5,h:0.35,fontSize:12,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tHC(y1,N), tHC(y2,N), tHC(y3,N)],
+                [tc(gv('signal2023'),{align:'center',fontSize:22,bold:true,color:B}), tc(gv('signal2024'),{align:'center',fontSize:22,bold:true,color:B}), tc(gv('signal2025'),{align:'center',fontSize:22,bold:true,color:B})]
+            ], {x:7.0,y:5.1,w:5.4,colW:[1.8,1.8,1.8],border:bdr,fontFace:'Calibri',rowH:0.4,autoPage:false});
+            pF(s,px,N);
+
+            // ══════════ 5: DETECTION ══════════
+            s = px.addSlide();
+            pH(s, px, 'Detection Systems & CCTV', 'Loop, video, and camera-based detection', N);
+            const chD = captureChart('detection');
+            if (chD) s.addImage({data:chD, x:0.3, y:1.2, w:6.0, h:4.5});
+            s.addTable([
+                [tH('System Type',G), tHC('Count',G)],
+                [tL('Loop Detection'), tV(gv('loopDetection'))],
+                [tL('Video Detection'), tV(gv('videoDetection'))],
+                [tL('Loop Running Phase'), tV(gv('loopPhase'))],
+                [tL('CCTV Locations'), tV(gv('cctvLocations'))],
+                [tT('Total Detection','dcfce7'), tTV(gt('totalDetection'),'dcfce7')]
+            ], {x:6.8,y:1.2,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.52,autoPage:false});
+            s.addShape(px.ShapeType.roundRect, {x:6.8,y:4.5,w:5.8,h:1.5,fill:{color:'f0fff4'},line:{color:G,width:1},rectRadius:0.1});
+            s.addText('Detection Mix', {x:7.0,y:4.6,w:5,h:0.4,fontSize:12,bold:true,color:N,fontFace:'Calibri'});
+            s.addText('Loop: '+gv('loopDetection')+' locations  |  Video: '+gv('videoDetection')+' locations  |  CCTV: '+gv('cctvLocations')+' cameras', {x:7.0,y:5.1,w:5.2,h:0.7,fontSize:13,color:'333333',fontFace:'Calibri'});
+            pF(s,px,N);
+
+            // ══════════ 6: TRAFFIC CALMING ══════════
+            s = px.addSlide();
+            pH(s, px, 'Traffic Calming Program', 'Speed cushion installations by district', N);
+            const chDi = captureChart('district');
+            if (chDi) s.addImage({data:chDi, x:0.3, y:1.2, w:6.0, h:4.5});
+            s.addTable([
+                [tH('District',R), tHC('Speed Cushions',R)],
+                [tL('Brookland'), tV(gv('brookland'))],
+                [tL('Fairfield'), tV(gv('fairfield'))],
+                [tL('Three Chopt'), tV(gv('threeChopt'))],
+                [tL('Tuckahoe'), tV(gv('tuckahoe'))],
+                [tL('Varina'), tV(gv('varina'))],
+                [tT('Total','fee2e2'), tTV(gt('totalSpeedCushions'),'fee2e2')]
+            ], {x:6.8,y:1.2,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.48,autoPage:false});
+            s.addShape(px.ShapeType.roundRect, {x:6.8,y:4.7,w:5.8,h:1.3,fill:{color:'fef2f2'},line:{color:R,width:1},rectRadius:0.1});
+            s.addText('Year-by-Year Comparison', {x:7.0,y:4.8,w:5,h:0.3,fontSize:11,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tHC(y1,N), tHC(y2,N), tHC(y3,N)],
+                [tc(gv('tc2023'),{align:'center',fontSize:20,bold:true,color:R}), tc(gv('tc2024'),{align:'center',fontSize:20,bold:true,color:R}), tc(gv('tc2025'),{align:'center',fontSize:20,bold:true,color:R})]
+            ], {x:7.0,y:5.2,w:5.4,colW:[1.8,1.8,1.8],border:bdr,fontFace:'Calibri',rowH:0.35,autoPage:false});
+            pF(s,px,N);
+
+            // ══════════ 7: PEDESTRIAN & LIGHTING ══════════
+            s = px.addSlide();
+            pH(s, px, 'Pedestrian Facilities & Lighting', 'Safety infrastructure for pedestrians and roadway illumination', N);
+            // Left panel
+            s.addShape(px.ShapeType.roundRect, {x:0.2,y:1.2,w:6.35,h:5.6,fill:{color:'fffbeb'},line:{color:GO,width:1.5},rectRadius:0.12});
+            s.addText('Pedestrian Facilities', {x:0.5,y:1.35,w:5,h:0.5,fontSize:16,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tH('Asset',GO), tHC('Count',GO)],
+                [tL('Pedestrian Flashers'), tV(gv('pedFlashers'))],
+                [tL('HAWK Ped Signals'), tV(gv('hawkSignals'))],
+                [tL('Push Button Sets'), tV(gv('pedPushTotal'))],
+                [tL('At Intersections'), tV(gv('pedPushIntersections'))],
+                [tT('Total Facilities','fef3c7'), tTV(gt('totalPed'),'fef3c7')]
+            ], {x:0.5,y:2.0,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.46,autoPage:false});
+            s.addShape(px.ShapeType.roundRect, {x:0.5,y:5.0,w:5.8,h:0.7,fill:{color:'fef9c3'},rectRadius:0.08});
+            s.addText('Trend: '+y1+': '+gv('ped2023')+'  \u2192  '+y2+': '+gv('ped2024')+'  \u2192  '+y3+': '+gv('ped2025'), {x:0.7,y:5.1,w:5.4,h:0.5,fontSize:12,color:'92400e',fontFace:'Calibri',bold:true});
+            // Right panel
+            s.addShape(px.ShapeType.roundRect, {x:6.75,y:1.2,w:6.35,h:5.6,fill:{color:'faf5ff'},line:{color:P,width:1.5},rectRadius:0.12});
+            s.addText('Lighting Infrastructure', {x:7.0,y:1.35,w:5,h:0.5,fontSize:16,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tH('Asset',P), tHC('Count',P)],
+                [tL('Total Luminaires'), tV(gv('luminaires'))],
+                [tL('Street Lighting Sets'), tV(gv('streetLightSets'))],
+                [tL('Solar Locations'), tV(gv('solarLocations'))],
+                [tL('Solar Lights (Approx)'), tV(gv('solarLights'))]
+            ], {x:7.0,y:2.0,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.46,autoPage:false});
+            s.addShape(px.ShapeType.roundRect, {x:7.0,y:5.0,w:5.7,h:1.5,fill:{color:'f3e8ff'},rectRadius:0.08});
+            s.addText(gv('luminaires'), {x:7.2,y:5.1,w:2,h:1.1,fontSize:36,bold:true,color:P,fontFace:'Calibri',align:'center',valign:'middle'});
+            s.addText('Total\nLuminaires', {x:9.3,y:5.2,w:3,h:1,fontSize:14,color:'6b21a8',fontFace:'Calibri',valign:'middle'});
+            pF(s,px,N);
+
+            // ══════════ 8: BIKE & PLAN REVIEW ══════════
+            s = px.addSlide();
+            pH(s, px, 'Bike Lanes, Guardrail & Plan Reviews', 'Active transportation and development review metrics', N);
+            // Left panel
+            s.addShape(px.ShapeType.roundRect, {x:0.2,y:1.2,w:6.35,h:5.6,fill:{color:'f0fdfa'},line:{color:T,width:1},rectRadius:0.1});
+            s.addText('Bike Lane & Guardrail', {x:0.5,y:1.35,w:5,h:0.4,fontSize:14,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tH('Metric',T), tHC('Value',T)],
+                [tL('Bike Lane Projects'), tV(gv('bikeLaneProjects'))],
+                [tL('Bike Lane Miles'), tV(gv('bikeLaneMiles'))],
+                [tL('Guardrail Maintained'), tV(gv('guardrailMaintained'))]
+            ], {x:0.5,y:1.85,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.44,autoPage:false});
+            const cBk = captureChart('bikeTrend');
+            if (cBk) s.addImage({data:cBk, x:0.4, y:3.7, w:5.8, h:2.9});
+            // Right panel
+            s.addShape(px.ShapeType.roundRect, {x:6.75,y:1.2,w:6.35,h:5.6,fill:{color:'eef6ff'},line:{color:B,width:1},rectRadius:0.1});
+            s.addText('Plan Review Statistics', {x:7.0,y:1.35,w:5,h:0.4,fontSize:14,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tH('Metric',B), tHC('Count',B)],
+                [tL('Total Reviews'), tV(gv('totalReviews'))],
+                [tL('POD Reviews'), tV(gv('podReviews'))],
+                [tL('Subdivision Reviews'), tV(gv('subdivisionReviews'))]
+            ], {x:7.0,y:1.85,w:5.8,colW:[3.5,2.3],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.44,autoPage:false});
+            const cPR = captureChart('prTrend');
+            if (cPR) s.addImage({data:cPR, x:6.9, y:3.7, w:5.8, h:2.9});
+            pF(s,px,N);
+
+            // ══════════ 9: TRENDS DASHBOARD ══════════
+            s = px.addSlide();
+            pH(s, px, 'Year-by-Year Trend Analysis', 'Performance trends from '+y1+' through '+y3, N);
+            const trends = [
+                ['signalTrend',0.2,1.2,6.35,2.7,'Signal Infrastructure','eef6ff',B],
+                ['tcTrend',6.75,1.2,6.35,2.7,'Traffic Calming','fef2f2',R],
+                ['pedTrend',0.2,4.1,6.35,2.7,'Pedestrian Facilities','fffbeb',GO],
+                ['prTrend',6.75,4.1,6.35,2.7,'Plan Reviews','f0fdfa',T]
+            ];
+            trends.forEach(([key,cx,cy,cw,ch,label,bg,accent]) => {
+                s.addShape(px.ShapeType.roundRect, {x:cx,y:cy,w:cw,h:ch,fill:{color:bg},line:{color:accent,width:0.5},rectRadius:0.1});
+                s.addText(label, {x:cx+0.2,y:cy+0.08,w:cw-0.4,h:0.3,fontSize:11,bold:true,color:N,fontFace:'Calibri'});
+                const img = captureChart(key);
+                if (img) s.addImage({data:img, x:cx+0.15, y:cy+0.4, w:cw-0.3, h:ch-0.5});
+            });
+            pF(s,px,N);
+
+            // ══════════ 10: STAFF & FLEET ══════════
+            s = px.addSlide();
+            pH(s, px, 'Staff & Fleet Overview', 'Personnel and vehicle resources', N);
+            kBox(s,px,0.3,1.2,2.9,1.5,gv('totalStaff'),'Total Staff','eef6ff',B,N);
+            kBox(s,px,3.5,1.2,2.9,1.5,gv('vacancies'),'Vacancies','f0fff4',G,N);
+            kBox(s,px,6.7,1.2,2.9,1.5,gt('grandTotal'),'Operations\nStaff','faf5ff',P,N);
+            kBox(s,px,9.9,1.2,2.9,1.5,gv('totalTrucks'),'Fleet\nVehicles','f0fdfa',T,N);
+            const cSt = captureChart('staff');
+            if (cSt) s.addImage({data:cSt, x:0.3, y:3.0, w:6.5, h:3.7});
+            s.addShape(px.ShapeType.roundRect, {x:7.2,y:3.0,w:5.8,h:3.8,fill:{color:'f0fdfa'},line:{color:T,width:0.5},rectRadius:0.1});
+            s.addText('Fleet Breakdown', {x:7.4,y:3.1,w:5,h:0.4,fontSize:14,bold:true,color:N,fontFace:'Calibri'});
+            s.addTable([
+                [tH('Vehicle Type',T), tHC('Count',T)],
+                [tL('Engineering Vehicles'), tV(gv('engVehicles'))],
+                [tL('Signal Vehicles'), tV(gv('signalVehicles'))],
+                [tL('Sign Vehicles'), tV(gv('signVehicles'))],
+                [tL('Leased'), tV(gv('leasedVehicles'))],
+                [tL('Owned'), tV(gv('ownedVehicles'))],
+                [tT('Total Trucks','ccfbf1'), tTV(gv('totalTrucks'),'ccfbf1')]
+            ], {x:7.4,y:3.6,w:5.4,colW:[3.3,2.1],border:bdr,fontFace:'Calibri',fontSize:11,color:'333333',rowH:0.38,autoPage:false});
+            pF(s,px,N);
+
+            // ══════════ 11: SUMMARY ══════════
+            s = px.addSlide();
+            pH(s, px, 'Summary & Key Highlights', 'Division-wide infrastructure overview', N);
+            const bullets = [
+                [gt('totalSignals')+' signalized intersections maintained across Henrico County',B,'eef6ff'],
+                [gt('totalDetection')+' detection systems monitoring traffic (Loop: '+gv('loopDetection')+', Video: '+gv('videoDetection')+')',G,'f0fff4'],
+                [gt('totalPed')+' pedestrian facilities with '+gv('pedPushTotal')+' push button sets',GO,'fffbeb'],
+                [gt('totalSpeedCushions')+' speed cushion locations across 5 districts',R,'fef2f2'],
+                [gv('bikeLaneMiles')+' miles of bike lanes + '+gv('guardrailMaintained')+' guardrail segments',T,'f0fdfa'],
+                [gv('totalStaff')+' staff ('+gv('vacancies')+' vacancies) with fleet of '+gv('totalTrucks')+' vehicles',P,'faf5ff'],
+                [gv('totalReviews')+' plan reviews ('+gv('podReviews')+' POD + '+gv('subdivisionReviews')+' Subdivision)',B,'eef6ff'],
+                [gv('luminaires')+' luminaires + '+gv('solarLocations')+' solar lighting locations','718096','f8fafc']
+            ];
+            bullets.forEach((b,i) => {
+                const by = 1.25 + i*0.68;
+                s.addShape(px.ShapeType.roundRect, {x:0.3,y:by,w:12.7,h:0.58,fill:{color:b[2]},line:{color:b[1],width:0.5},rectRadius:0.06});
+                s.addShape(px.ShapeType.rect, {x:0.3,y:by,w:0.1,h:0.58,fill:{color:b[1]}});
+                s.addText('\u25cf  '+b[0], {x:0.6,y:by,w:12.2,h:0.58,fontSize:13,color:'333333',fontFace:'Calibri',valign:'middle'});
+            });
+            pF(s,px,N);
+
+            // ══════════ 12: THANK YOU ══════════
+            s = px.addSlide();
+            s.addShape(px.ShapeType.rect, {x:0,y:0,w:'100%',h:'100%',fill:{color:N}});
+            s.addShape(px.ShapeType.rect, {x:0,y:0,w:0.15,h:'100%',fill:{color:B}});
+            s.addShape(px.ShapeType.rect, {x:0.15,y:0,w:0.05,h:'100%',fill:{color:BL}});
+            s.addShape(px.ShapeType.rect, {x:0,y:3.8,w:'100%',h:0.06,fill:{color:B}});
+            s.addShape(px.ShapeType.rect, {x:0,y:3.9,w:5,h:0.04,fill:{color:BL}});
+            s.addShape(px.ShapeType.rect, {x:0,y:3.97,w:3,h:0.03,fill:{color:GO}});
+            s.addText('Thank You', {x:0,y:1.8,w:'100%',h:1.6,fontSize:52,bold:true,color:'ffffff',align:'center',fontFace:'Calibri'});
+            s.addText('Traffic Engineering Division', {x:0,y:4.2,w:'100%',h:0.7,fontSize:22,color:'cccccc',align:'center',fontFace:'Calibri'});
+            s.addText('Henrico County Department of Public Works', {x:0,y:4.9,w:'100%',h:0.5,fontSize:15,color:'888888',align:'center',fontFace:'Calibri'});
+            s.addText('Questions & Discussion', {x:0,y:5.8,w:'100%',h:0.6,fontSize:20,color:BL,align:'center',fontFace:'Calibri',italic:true});
+
+            await px.writeFile({ fileName: 'Traffic_Engineering_Report_' + new Date().toISOString().slice(0,10) + '.pptx' });
+            showToast('PPT downloaded successfully');
+        } catch (e) {
+            console.error('PPT error:', e);
+            showToast('PPT error: ' + e.message);
+        } finally {
+            _pptBusy = false;
+        }
+    }
+
+    /* ═══════════════════════════════════════════════════
+       EXPORT HTML WITH EMBEDDED DATA
+       ═══════════════════════════════════════════════════ */
+    function exportWithData() {
+        const data = collectFormData();
+        data._lastUpdated = new Date().toISOString();
+        data._customSections = JSON.stringify(customSections);
+
+        // Get the current HTML
+        const html = document.documentElement.outerHTML;
+
+        // Inject data loading script right before </body>
+        const dataScript = `<script>
+        // EMBEDDED DATA - Auto-loaded when file is opened
+        window._EMBEDDED_DATA = ${JSON.stringify(data)};
+        document.addEventListener('DOMContentLoaded', function() {
+            if (window._EMBEDDED_DATA) {
+                const d = window._EMBEDDED_DATA;
+                Object.keys(d).forEach(k => {
+                    if (k.startsWith('_')) return;
+                    const el = document.getElementById(k);
+                    if (el) el.value = d[k];
+                });
+                if (d._lastUpdated) document.getElementById('lastUpdated').textContent = new Date(d._lastUpdated).toLocaleString() + ' (exported)';
+                setTimeout(() => {
+                    if (typeof updateCalc === 'function') updateCalc();
+                    if (typeof updateStaffCalc === 'function') updateStaffCalc();
+                    if (typeof updateDistrictTotal === 'function') updateDistrictTotal();
+                    if (typeof updateGuardrail === 'function') updateGuardrail();
+                    if (typeof updateAllCharts === 'function') updateAllCharts();
+                }, 500);
+            }
+        });
+        <\/script>`;
+
+        const modifiedHTML = html.replace('</body>', dataScript + '</body>');
+        const blob = new Blob([modifiedHTML], { type: 'text/html' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Traffic_Engineering_Inventory_${new Date().toISOString().slice(0,10)}.html`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('✅ HTML with data exported — share this file!');
+    }
+
+    /* ═══════════════════════════════════════════════════
+       CHECK FOR EMBEDDED DATA
+       ═══════════════════════════════════════════════════ */
+    function checkEmbeddedData() {
+        if (window._EMBEDDED_DATA) {
+            const d = window._EMBEDDED_DATA;
+            applyFormData(d);
+            if (d._lastUpdated) document.getElementById('lastUpdated').textContent = new Date(d._lastUpdated).toLocaleString() + ' (from export)';
+            return true;
+        }
+        return false;
+    }
+
+    /* ═══════════════════════════════════════════════════
+       INITIALIZE
+       ═══════════════════════════════════════════════════ */
+    document.addEventListener('DOMContentLoaded', async function() {
+        if (!checkEmbeddedData()) {
+            await loadData();
+        }
+        updateCalc();
+        updateStaffCalc();
+        updateDistrictTotal();
+        updateGuardrail();
+        updateYearLabels();
+        initCharts();
+
+        // Auto-save on any input change (debounced)
+        let saveTimeout;
+        document.addEventListener('input', function(e) {
+            if (e.target.matches('.form-input, .tbl-input, .notes-area, .year-input, .custom-field-input')) {
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => saveData(), 2000);
+            }
+        });
+    });
+    </script>
+</body>
+</html>
